@@ -82,7 +82,7 @@ std::string DiagnosticEngine::formatDiagnostic(const Diagnostic& diagnostic) con
     }
 
     // Add code
-    result += std::format("[{}] ", static_cast<int>(diagnostic.code()));
+    result += "[" + std::to_string(static_cast<int>(diagnostic.code())) + "] ";
 
     // Add message
     result += diagnostic.message();
@@ -91,7 +91,7 @@ std::string DiagnosticEngine::formatDiagnostic(const Diagnostic& diagnostic) con
     if (diagnostic.location().isValid()) {
         const SourceFile* file = sourceManager_->getFileForLocation(diagnostic.location());
         if (file) {
-            result += std::format("\n  --> {}:{}", file->displayName, diagnostic.location().toString());
+            result += "\n  --> " + file->displayName + ":" + diagnostic.location().toString();
         }
     }
 
@@ -178,8 +178,9 @@ StreamConsumer::StreamConsumer(std::ostream& stream, bool useColors)
 }
 
 bool StreamConsumer::handleDiagnostic(const Diagnostic& diagnostic) {
-    // Format the diagnostic
-    std::string formatted = formatDiagnostic(diagnostic);
+    // Format the diagnostic (simple implementation for now)
+    std::string formatted = "[" + std::to_string(static_cast<int>(diagnostic.code())) + "] " +
+                           diagnostic.message();
 
     // Apply colors if enabled
     if (useColors_) {

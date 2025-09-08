@@ -4,24 +4,15 @@
 
 set(SYMBOLS_SOURCES
     Symbol.cpp
-    SymbolTable.cpp
-    Scope.cpp
-    Lookup.cpp
-    NameLookup.cpp
 )
 
 set(SYMBOLS_HEADERS
     Symbol.h
-    SymbolTable.h
-    Scope.h
-    Lookup.h
-    NameLookup.h
 )
 
 # Crear librería de símbolos
 add_library(cpp20-compiler-symbols STATIC
     ${SYMBOLS_SOURCES}
-    ${SYMBOLS_HEADERS}
 )
 
 # Dependencias

@@ -47,7 +47,7 @@ Cada capa establece invariantes binarias que la siguiente puede asumir como corr
 ---
 
 ## 🏗️ **Capa 1: Formato COFF y Relocations**
-**Estado**: ⏳ Pendiente - Formato objeto nativo
+**Estado**: ✅ Completado - Formato objeto nativo funcional
 **Objetivo**: Emisión nativa de .obj COFF con relocations AMD64
 
 ### **Alcance de la Capa 1**
@@ -288,14 +288,14 @@ Cada capa establece invariantes binarias que la siguiente puede asumir como corr
 ## 📊 **Métricas de Éxito por Capa**
 
 ### **Capa 0 (ABI)**: ✅ Ejecutables básicos funcionales
-### **Capa 1 (COFF)**: ✅ .obj enlazables con link.exe
-### **Capa 2 (EH)**: ✅ Stack unwinding interoperable
-### **Capa 3 (Mangling)**: ✅ Enlace transparente con MSVC
-### **Capa 4 (Front-end)**: ✅ C++ básico compila correctamente
-### **Capa 5 (Templates)**: ✅ Metaprogramming interoperable
-### **Capa 6 (Constexpr)**: ✅ Evaluación determinista
-### **Capa 7 (Modules)**: ✅ Compilación incremental
-### **Capa 8 (Coroutines)**: ✅ Async programming funcional
+### **Capa 1 (COFF)**: ✅ **COMPLETADO** - .obj enlazables con link.exe
+### **Capa 2 (EH)**: ⏳ Stack unwinding interoperable
+### **Capa 3 (Mangling)**: ⏳ Enlace transparente con MSVC
+### **Capa 4 (Front-end)**: ⏳ C++ básico compila correctamente
+### **Capa 5 (Templates)**: ⏳ Metaprogramming interoperable
+### **Capa 6 (Constexpr)**: ⏳ Evaluación determinista
+### **Capa 7 (Modules)**: ⏳ Compilación incremental
+### **Capa 8 (Coroutines)**: ⏳ Async programming funcional
 
 ## ⚡ **Timeline Realista**
 
@@ -326,4 +326,5 @@ Dependencias deductivas claras permiten desarrollo incremental seguro
 **Este plan garantiza un compilador C++20 verdaderamente desde cero, con corrección binaria verificable en cada paso.**
 
 *Última actualización: $(date)*
+*Estado del proyecto: Capa 0 ✅ Completada, Capa 1 ✅ Completada, Capa 2 ⏳ Próxima*
 *Enfoque: Desarrollo por capas con criterios de salida medibles*

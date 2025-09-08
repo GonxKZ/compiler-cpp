@@ -5,76 +5,25 @@
 # Lexer
 set(LEXER_SOURCES
     lexer/Lexer.cpp
-    lexer/Token.cpp
-    lexer/KeywordTable.cpp
 )
 
 set(LEXER_HEADERS
     lexer/Lexer.h
     lexer/Token.h
-    lexer/KeywordTable.h
-)
-
-# Parser
-set(PARSER_SOURCES
-    parser/Parser.cpp
-    parser/ParseExpression.cpp
-    parser/ParseStatement.cpp
-    parser/ParseDeclaration.cpp
-)
-
-set(PARSER_HEADERS
-    parser/Parser.h
-    parser/ParseExpression.h
-    parser/ParseStatement.h
-    parser/ParseDeclaration.h
-)
-
-# Preprocesador
-set(PREPROCESSOR_SOURCES
-    preprocessor/Preprocessor.cpp
-    preprocessor/Macro.cpp
-    preprocessor/Directive.cpp
-)
-
-set(PREPROCESSOR_HEADERS
-    preprocessor/Preprocessor.h
-    preprocessor/Macro.h
-    preprocessor/Directive.h
-)
-
-# Análisis Semántico
-set(SEMANTIC_SOURCES
-    semantic/SemanticAnalyzer.cpp
-    semantic/TypeChecker.cpp
-    semantic/NameResolver.cpp
-)
-
-set(SEMANTIC_HEADERS
-    semantic/SemanticAnalyzer.h
-    semantic/TypeChecker.h
-    semantic/NameResolver.h
 )
 
 # Combinar todos los sources y headers
 set(FRONTEND_SOURCES
     ${LEXER_SOURCES}
-    ${PARSER_SOURCES}
-    ${PREPROCESSOR_SOURCES}
-    ${SEMANTIC_SOURCES}
 )
 
 set(FRONTEND_HEADERS
     ${LEXER_HEADERS}
-    ${PARSER_HEADERS}
-    ${PREPROCESSOR_HEADERS}
-    ${SEMANTIC_HEADERS}
 )
 
 # Crear librería del front-end
 add_library(cpp20-compiler-frontend STATIC
     ${FRONTEND_SOURCES}
-    ${FRONTEND_HEADERS}
 )
 
 # Dependencias

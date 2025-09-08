@@ -13,7 +13,13 @@ namespace cpp20::compiler::diagnostics {
 // SourceFile implementation
 SourceFile::SourceFile(uint32_t id, std::filesystem::path path, std::string content)
     : id(id), path(std::move(path)), content(std::move(content)) {
-    lineOffsets = computeLineOffsets(this->content);
+    // Compute line offsets
+    lineOffsets.push_back(0); // First line starts at offset 0
+    for (size_t i = 0; i < content.size(); ++i) {
+        if (content[i] == '\n') {
+            lineOffsets.push_back(static_cast<uint32_t>(i + 1));
+        }
+    }
     displayName = this->path.filename().string();
 }
 
@@ -202,18 +208,6 @@ uint32_t SourceManager::assignFileId() {
     return nextFileId_++;
 }
 
-std::vector<uint32_t> SourceManager::computeLineOffsets(const std::string& content) const {
-    std::vector<uint32_t> offsets;
-    offsets.push_back(0); // First line starts at offset 0
-
-    for (size_t i = 0; i < content.size(); ++i) {
-        if (content[i] == '\n') {
-            offsets.push_back(static_cast<uint32_t>(i + 1));
-        }
-    }
-
-    return offsets;
-}
 
 bool SourceManager::loadFileContent(const std::filesystem::path& path,
                                    std::string& content) const {

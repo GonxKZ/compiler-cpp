@@ -22,21 +22,34 @@ set(FRAME_HEADERS
     frame/FrameLayout.h
 )
 
+# COFF Support
+set(COFF_SOURCES
+    coff/COFFWriter.cpp
+    coff/COFFDumper.cpp
+)
+
+set(COFF_HEADERS
+    coff/COFFTypes.h
+    coff/COFFWriter.h
+    coff/COFFDumper.h
+)
+
 # Combinar todos los sources y headers
 set(BACKEND_SOURCES
     ${ABI_SOURCES}
     ${FRAME_SOURCES}
+    ${COFF_SOURCES}
 )
 
 set(BACKEND_HEADERS
     ${ABI_HEADERS}
     ${FRAME_HEADERS}
+    ${COFF_HEADERS}
 )
 
 # Crear librería del back-end
 add_library(cpp20-compiler-backend STATIC
     ${BACKEND_SOURCES}
-    ${BACKEND_HEADERS}
 )
 
 # Dependencias

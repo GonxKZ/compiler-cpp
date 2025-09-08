@@ -11,7 +11,6 @@ set(COMMON_SOURCES
     utils/FileUtils.cpp
     utils/MemoryPool.cpp
     utils/HashUtils.cpp
-    utils/CommandLine.cpp
 )
 
 set(COMMON_HEADERS
@@ -23,13 +22,11 @@ set(COMMON_HEADERS
     utils/FileUtils.h
     utils/MemoryPool.h
     utils/HashUtils.h
-    utils/CommandLine.h
 )
 
 # Crear librería común
 add_library(cpp20-compiler-common STATIC
     ${COMMON_SOURCES}
-    ${COMMON_HEADERS}
 )
 
 # Configuración de la librería
@@ -37,8 +34,6 @@ target_include_directories(cpp20-compiler-common
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Propiedades de compilación

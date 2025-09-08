@@ -51,7 +51,7 @@ void MemoryPool::reset() {
 
     if (!blocks_.empty()) {
         blocks_.resize(1);
-        currentBlock_ = blocks_[0];
+        currentBlock_ = static_cast<char*>(blocks_[0]);
         used_ = 0;
     }
 }

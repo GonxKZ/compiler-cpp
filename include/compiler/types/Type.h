@@ -44,9 +44,8 @@ public:
         Decltype
     };
 
-    Type(Kind kind, CVQualifier cv = CVQualifier::None)
-        : kind_(kind), cv_(cv) {}
-    virtual ~Type() = default;
+    Type(Kind kind, CVQualifier cv = CVQualifier::None);
+    virtual ~Type();
 
     // Getters
     Kind kind() const { return kind_; }

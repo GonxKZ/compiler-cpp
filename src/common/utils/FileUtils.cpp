@@ -4,6 +4,7 @@
  */
 
 #include <compiler/common/utils/FileUtils.h>
+#include <compiler/common/utils/StringUtils.h>
 #include <filesystem>
 #include <fstream>
 

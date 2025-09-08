@@ -6,19 +6,16 @@ set(DRIVER_SOURCES
     main.cpp
     CompilerDriver.cpp
     CommandLineParser.cpp
-    CompilationPipeline.cpp
 )
 
 set(DRIVER_HEADERS
     CompilerDriver.h
     CommandLineParser.h
-    CompilationPipeline.h
 )
 
 # Ejecutable principal
 add_executable(cpp20-compiler
     ${DRIVER_SOURCES}
-    ${DRIVER_HEADERS}
 )
 
 # Dependencias

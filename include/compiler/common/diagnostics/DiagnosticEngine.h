@@ -102,6 +102,11 @@ public:
     std::string formatDiagnostic(const Diagnostic& diagnostic) const;
     std::string formatSourceLine(SourceLocation location, int contextLines = 1) const;
 
+    // Funciones públicas para formateo
+    std::string formatDiagnosticPublic(const Diagnostic& diagnostic) const {
+        return formatDiagnostic(diagnostic);
+    }
+
 private:
     // Miembros privados
     std::shared_ptr<SourceManager> sourceManager_;
