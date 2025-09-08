@@ -133,7 +133,7 @@ private:
     /**
      * @brief Verifica reglas de layout de vtable de MSVC
      */
-    bool validateMSVCVTableRules(const std::vector<VTableEntry>& entries) const;
+    static bool validateMSVCVTableRules(const std::vector<VTableEntry>& entries);
 };
 
 /**

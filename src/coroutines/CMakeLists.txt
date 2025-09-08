@@ -34,3 +34,6 @@ target_compile_definitions(cpp20-compiler-coroutines
     PUBLIC
         CPP20_COROUTINES_ENABLED=1
 )
+
+# Alias para uso consistente
+add_library(cpp20-compiler::coroutines ALIAS cpp20-compiler-coroutines)

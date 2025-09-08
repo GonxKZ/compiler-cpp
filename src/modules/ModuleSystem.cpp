@@ -606,14 +606,14 @@ std::unique_ptr<ModuleInterface> ModuleLoader::loadModule(const std::string& mod
         auto module = std::make_unique<ModuleInterface>(moduleName, sourcePath);
         module->setBMI(std::move(bmi));
         loadedModules_[moduleName] = std::move(module);
-        return std::make_unique<ModuleInterface>(*loadedModules_[moduleName]);
+        return std::make_unique<ModuleInterface>(moduleName, sourcePath);
     }
 
     // Create new module interface
     auto module = std::make_unique<ModuleInterface>(moduleName, sourcePath);
     loadedModules_[moduleName] = std::move(module);
 
-    return std::make_unique<ModuleInterface>(*loadedModules_[moduleName]);
+    return std::make_unique<ModuleInterface>(moduleName, sourcePath);
 }
 
 bool ModuleLoader::isModuleLoaded(const std::string& moduleName) const {

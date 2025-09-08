@@ -4,6 +4,7 @@
  */
 
 #include <compiler/driver/CompilerDriver.h>
+#include <compiler/driver/CommandLineParser.h>
 #include <iostream>
 
 namespace cpp20::compiler {

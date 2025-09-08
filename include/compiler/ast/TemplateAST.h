@@ -1,4 +1,4 @@
-/**
+git /**
  * @file TemplateAST.h
  * @brief Nodos AST para templates y concepts C++20
  */
@@ -33,7 +33,7 @@ public:
     const std::string& getName() const { return name_; }
     ASTNode* getDefaultValue() const { return defaultValue_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     TemplateParameterType parameterType_;
@@ -51,7 +51,7 @@ public:
     const std::vector<std::unique_ptr<TemplateParameter>>& getParameters() const { return parameters_; }
     void addParameter(std::unique_ptr<TemplateParameter> param);
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::vector<std::unique_ptr<TemplateParameter>> parameters_;
@@ -68,7 +68,7 @@ public:
     const TemplateParameterList* getParameters() const { return parameters_.get(); }
     ASTNode* getDeclaration() const { return declaration_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::unique_ptr<TemplateParameterList> parameters_;
@@ -91,7 +91,7 @@ public:
     ArgumentType getArgumentType() const { return argumentType_; }
     ASTNode* getValue() const { return value_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     ArgumentType argumentType_;
@@ -108,7 +108,7 @@ public:
     const std::vector<std::unique_ptr<TemplateArgument>>& getArguments() const { return arguments_; }
     void addArgument(std::unique_ptr<TemplateArgument> arg);
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::vector<std::unique_ptr<TemplateArgument>> arguments_;
@@ -125,7 +125,7 @@ public:
     ASTNode* getTemplateName() const { return templateName_.get(); }
     const TemplateArgumentList* getArguments() const { return arguments_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::unique_ptr<ASTNode> templateName_;
@@ -145,7 +145,7 @@ public:
     const TemplateArgumentList* getArguments() const { return arguments_.get(); }
     ASTNode* getBody() const { return body_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::unique_ptr<ASTNode> templateName_;
@@ -166,7 +166,7 @@ public:
     const TemplateParameterList* getParameters() const { return parameters_.get(); }
     ASTNode* getConstraintExpression() const { return constraintExpression_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::string name_;
@@ -183,7 +183,7 @@ public:
 
     ASTNode* getRequirements() const { return requirements_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::unique_ptr<ASTNode> requirements_;
@@ -200,7 +200,7 @@ public:
     const TemplateParameterList* getParameters() const { return parameters_.get(); }
     ASTNode* getRequirements() const { return requirements_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     std::unique_ptr<TemplateParameterList> parameters_;
@@ -229,7 +229,7 @@ public:
     ASTNode* getLeft() const { return left_.get(); }
     ASTNode* getRight() const { return right_.get(); }
 
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor* visitor);
 
 private:
     ConstraintType constraintType_;

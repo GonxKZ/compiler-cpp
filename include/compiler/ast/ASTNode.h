@@ -18,17 +18,23 @@ namespace cpp20::compiler::ast {
 enum class ASTNodeKind {
     // Expresiones
     Literal,
+    IntegerLiteral,
+    FloatingPointLiteral,
+    CharacterLiteral,
+    StringLiteral,
+    BooleanLiteral,
     Identifier,
     BinaryOp,
     UnaryOp,
-    Call,
+    FunctionCall,
     MemberAccess,
     ArrayAccess,
     Cast,
-    Conditional,
+    TernaryOp,
     Lambda,
     New,
     Delete,
+    Assignment,
 
     // Declaraciones
     VariableDecl,
@@ -66,6 +72,16 @@ public:
     ASTNode(ASTNodeKind kind, diagnostics::SourceLocation location)
         : kind_(kind), location_(location) {}
     virtual ~ASTNode() = default;
+
+    /**
+     * @brief Obtiene el tipo de nodo AST
+     */
+    ASTNodeKind getKind() const { return kind_; }
+
+    /**
+     * @brief Obtiene la ubicación del nodo
+     */
+    const diagnostics::SourceLocation& getLocation() const { return location_; }
 
     // Getters
     ASTNodeKind kind() const { return kind_; }

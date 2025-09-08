@@ -96,7 +96,7 @@ std::string MSVCNameMangler::mangleVariable(const VariableInfo& varInfo) {
     return result;
 }
 
-std::string MSVCNameMangler::mangleClass(const ClassInfo& classInfo) {
+std::string MSVCNameMangler::mangleClass(const ClassInfo& classInfo) const {
     std::string result = "?";
 
     // Scope
@@ -199,7 +199,7 @@ std::string MSVCNameMangler::generateFunctionSuffix(const FunctionInfo& funcInfo
     return suffix;
 }
 
-std::string MSVCNameMangler::mangleBaseName(const std::string& name) {
+std::string MSVCNameMangler::mangleBaseName(const std::string& name) const {
     if (name.empty()) return "";
 
     // Longitud del nombre
@@ -209,7 +209,7 @@ std::string MSVCNameMangler::mangleBaseName(const std::string& name) {
     return lengthCode + escapedName;
 }
 
-std::string MSVCNameMangler::mangleScope(const std::string& scope) {
+std::string MSVCNameMangler::mangleScope(const std::string& scope) const {
     if (scope.empty()) return "";
 
     // Parse namespace/class hierarchy
@@ -258,7 +258,7 @@ std::string MSVCNameMangler::mangleParameterList(const std::vector<std::string>&
     return result;
 }
 
-std::string MSVCNameMangler::encodeLength(size_t length) {
+std::string MSVCNameMangler::encodeLength(size_t length) const {
     if (length < 10) {
         return std::to_string(length);
     } else {
@@ -273,7 +273,7 @@ bool MSVCNameMangler::isValidMangledChar(char c) const {
            c == '_' || c == '@' || c == '$';
 }
 
-std::string MSVCNameMangler::escapeSpecialChars(const std::string& str) {
+std::string MSVCNameMangler::escapeSpecialChars(const std::string& str) const {
     std::string result;
     for (char c : str) {
         if (isValidMangledChar(c)) {

@@ -108,6 +108,7 @@ struct ConstexprVariable {
     bool isConst = true;
     bool isInitialized = false;
 
+    ConstexprVariable() = default;
     ConstexprVariable(const std::string& n, const ConstexprValue& v, bool isConst_ = true)
         : name(n), value(v), isConst(isConst_), isInitialized(true) {}
 };

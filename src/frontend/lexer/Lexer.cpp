@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cctype>
 #include <sstream>
+#include <iostream>
 
 namespace cpp20::compiler::frontend::lexer {
 
@@ -210,7 +211,7 @@ bool Lexer::isAtEnd() const {
 }
 
 diagnostics::SourceLocation Lexer::currentLocation() const {
-    return diagnostics::SourceLocation("", state_.line, state_.column);
+    return diagnostics::SourceLocation(state_.line, state_.column, state_.position);
 }
 
 void Lexer::advancePosition(char c) {

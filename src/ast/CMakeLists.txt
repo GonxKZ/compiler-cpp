@@ -4,10 +4,12 @@
 
 set(AST_SOURCES
     ASTNode.cpp
+    ExpressionAST.cpp
 )
 
 set(AST_HEADERS
     ASTNode.h
+    ExpressionAST.h
 )
 
 # Crear librería AST

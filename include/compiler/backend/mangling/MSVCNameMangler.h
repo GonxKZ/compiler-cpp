@@ -122,7 +122,7 @@ public:
      * @param classInfo Información de la clase
      * @return Nombre mangled
      */
-    std::string mangleClass(const ClassInfo& classInfo);
+    std::string mangleClass(const ClassInfo& classInfo) const;
 
     /**
      * @brief Manglea un tipo básico
@@ -195,12 +195,12 @@ private:
     /**
      * @brief Manglea nombre base
      */
-    std::string mangleBaseName(const std::string& name);
+    std::string mangleBaseName(const std::string& name) const;
 
     /**
      * @brief Manglea scope/namespace
      */
-    std::string mangleScope(const std::string& scope);
+    std::string mangleScope(const std::string& scope) const;
 
     /**
      * @brief Manglea calificadores de función
@@ -215,7 +215,7 @@ private:
     /**
      * @brief Codifica longitud para MSVC
      */
-    std::string encodeLength(size_t length);
+    std::string encodeLength(size_t length) const;
 
     /**
      * @brief Verifica si un caracter es válido en nombres mangled
@@ -225,7 +225,7 @@ private:
     /**
      * @brief Escapa caracteres especiales
      */
-    std::string escapeSpecialChars(const std::string& str);
+    std::string escapeSpecialChars(const std::string& str) const;
 };
 
 /**

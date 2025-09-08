@@ -64,6 +64,13 @@ struct CompilerOptions {
     size_t maxErrors = 100;             // Máximo número de errores
     bool timing = false;                // -ftime-report: reportar tiempos
     std::string saveTemps;              // -save-temps: guardar archivos temporales
+
+    // Ayuda y versión
+    bool showHelp = false;              // -h, --help: mostrar ayuda
+    bool showVersion = false;           // -v, --version: mostrar versión
+
+    // Archivos de entrada
+    std::vector<std::string> inputFiles; // Archivos fuente de entrada
 };
 
 /**

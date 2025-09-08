@@ -28,3 +28,6 @@ target_compile_options(cpp20-compiler-modules PRIVATE
     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra>
     $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra>
 )
+
+# Alias para uso consistente
+add_library(cpp20-compiler::modules ALIAS cpp20-compiler-modules)

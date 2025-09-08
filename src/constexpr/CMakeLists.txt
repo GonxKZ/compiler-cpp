@@ -29,8 +29,6 @@ target_link_libraries(cpp20-compiler-constexpr
         cpp20-compiler::common
         cpp20-compiler::ast
         cpp20-compiler::types
-    PRIVATE
-        cpp20-compiler::diagnostics
 )
 
 # Configurar opciones de compilación

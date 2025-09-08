@@ -132,17 +132,24 @@ bool VTableGenerator::validateVTable(const std::vector<VTableEntry>& entries) {
     // Verificar que no haya funciones puras virtuales al final
     // (MSVC permite funciones puras virtuales, pero tienen restricciones)
 
-    return validateMSVCVTableRules(entries);
+    return VTableGenerator::validateMSVCVTableRules(entries);
 }
 
 std::vector<VTableEntry> VTableGenerator::generateOwnVirtualEntries(const ClassLayout& layout) {
     std::vector<VTableEntry> entries;
 
     for (const auto& vfunc : layout.getVirtualFunctions()) {
-        std::string mangledName = nameMangler_.mangleFunction({
-            vfunc.name, "", {}, "", FunctionQualifiers::None,
-            true, false, false, 0
-        });
+        FunctionInfo funcInfo;
+        funcInfo.name = vfunc.name;
+        funcInfo.scope = "";
+        funcInfo.parameterTypes = {};
+        funcInfo.returnType = "";
+        funcInfo.qualifiers = FunctionQualifiers::None;
+        funcInfo.isVirtual = true;
+        funcInfo.isStatic = false;
+        funcInfo.isExternC = false;
+        funcInfo.templateArgs = 0;
+        std::string mangledName = nameMangler_.mangleFunction(funcInfo);
 
         entries.emplace_back(vfunc.name, mangledName, 0, vfunc.isPureVirtual, false);
     }
@@ -160,10 +167,17 @@ std::vector<VTableEntry> VTableGenerator::generateInheritedVirtualEntries(const 
             // Simular funciones virtuales heredadas
             // En un compilador real, esto vendría del layout de la clase base
             std::string baseFuncName = "inherited_func";
-            std::string mangledName = nameMangler_.mangleFunction({
-                baseFuncName, inherit.baseClass, {}, "", FunctionQualifiers::None,
-                true, false, false, 0
-            });
+            FunctionInfo funcInfo;
+            funcInfo.name = baseFuncName;
+            funcInfo.scope = inherit.baseClass;
+            funcInfo.parameterTypes = {};
+            funcInfo.returnType = "";
+            funcInfo.qualifiers = FunctionQualifiers::None;
+            funcInfo.isVirtual = true;
+            funcInfo.isStatic = false;
+            funcInfo.isExternC = false;
+            funcInfo.templateArgs = 0;
+            std::string mangledName = nameMangler_.mangleFunction(funcInfo);
 
             entries.emplace_back(baseFuncName, mangledName, 0, false, true);
         }
@@ -205,10 +219,17 @@ std::vector<VTableEntry> VTableGenerator::generateThunks(const ClassLayout& layo
             int32_t offset = calculateThunkOffset(inherit);
 
             std::string thunkName = generateThunkName("virtual_func", offset);
-            std::string mangledName = nameMangler_.mangleFunction({
-                thunkName, layout.getDataMembers().empty() ? "class" : "struct",
-                {}, "", FunctionQualifiers::None, true, false, false, 0
-            });
+            FunctionInfo funcInfo;
+            funcInfo.name = thunkName;
+            funcInfo.scope = layout.getDataMembers().empty() ? "class" : "struct";
+            funcInfo.parameterTypes = {};
+            funcInfo.returnType = "";
+            funcInfo.qualifiers = FunctionQualifiers::None;
+            funcInfo.isVirtual = true;
+            funcInfo.isStatic = false;
+            funcInfo.isExternC = false;
+            funcInfo.templateArgs = 0;
+            std::string mangledName = nameMangler_.mangleFunction(funcInfo);
 
             thunks.emplace_back(thunkName, mangledName, 0, false, true);
         }
@@ -227,7 +248,7 @@ std::string VTableGenerator::generateThunkName(const std::string& functionName,
     return functionName + "_thunk_" + std::to_string(offset);
 }
 
-bool VTableGenerator::validateMSVCVTableRules(const std::vector<VTableEntry>& entries) const {
+bool VTableGenerator::validateMSVCVTableRules(const std::vector<VTableEntry>& entries) {
     // Reglas de validación MSVC para vtables:
 
     // 1. Primera entrada nunca debe ser null (excepto para clases abstractas puras)

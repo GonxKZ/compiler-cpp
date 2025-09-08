@@ -202,7 +202,7 @@ write_basic_package_version_file(
 # Instalación
 # =============================================================================
 
-install(TARGETS cpp20-compiler-common cpp20-compiler
+install(TARGETS cpp20-compiler
     EXPORT cpp20-compiler-targets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
