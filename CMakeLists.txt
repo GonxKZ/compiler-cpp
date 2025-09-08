@@ -145,6 +145,7 @@ if(CPP20_COMPILER_ENABLE_MODULES)
 endif()
 
 # Corroutinas C++20
+option(CPP20_COMPILER_ENABLE_COROUTINES "Enable C++20 coroutines support" ON)
 if(CPP20_COMPILER_ENABLE_COROUTINES)
     add_subdirectory(src/coroutines)
 endif()

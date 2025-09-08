@@ -75,4 +75,26 @@ if(CPP20_COMPILER_ENABLE_MODULES)
     endif()
 endif()
 
+# Ejemplo del sistema de corroutinas C++20 (Capa 8)
+if(CPP20_COMPILER_ENABLE_COROUTINES)
+    # Ejemplo de ping-pong con corroutinas
+    add_executable(coro-pingpong coro_pingpong.cpp)
+
+    target_link_libraries(coro-pingpong
+        PRIVATE
+            cpp20-compiler::coroutines
+            cpp20-compiler::backend
+            cpp20-compiler::common
+    )
+
+    # Configurar para corroutinas si el compilador lo soporta
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_compile_options(coro-pingpong PRIVATE /await)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        target_compile_options(coro-pingpong PRIVATE -fcoroutines-ts)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_compile_options(coro-pingpong PRIVATE -fcoroutines)
+    endif()
+endif()
+
 # Configurar ejemplos según las capas implementadas
