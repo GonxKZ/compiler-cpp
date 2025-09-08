@@ -47,12 +47,26 @@ set(UNWIND_HEADERS
     unwind/ExceptionMapper.h
 )
 
+# Mangling Support
+set(MANGLING_SOURCES
+    mangling/MSVCNameMangler.cpp
+    mangling/ClassLayout.cpp
+    mangling/VTableGenerator.cpp
+)
+
+set(MANGLING_HEADERS
+    mangling/MSVCNameMangler.h
+    mangling/ClassLayout.h
+    mangling/VTableGenerator.h
+)
+
 # Combinar todos los sources y headers
 set(BACKEND_SOURCES
     ${ABI_SOURCES}
     ${FRAME_SOURCES}
     ${COFF_SOURCES}
     ${UNWIND_SOURCES}
+    ${MANGLING_SOURCES}
 )
 
 set(BACKEND_HEADERS
@@ -60,6 +74,7 @@ set(BACKEND_HEADERS
     ${FRAME_HEADERS}
     ${COFF_HEADERS}
     ${UNWIND_HEADERS}
+    ${MANGLING_HEADERS}
 )
 
 # Crear librería del back-end
