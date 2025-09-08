@@ -206,17 +206,46 @@ void CompilerDriver::printDiagnostics() const {
     std::cout << "Sistema de diagnósticos inicializado" << std::endl;
 }
 
-bool CompilerDriver::runPreprocessing(const std::vector<std::filesystem::path>& /*inputs*/,
-                                     const CompilerOptions& /*options*/) {
-    // TODO: Implementar preprocesamiento
-    std::cout << "Fase de preprocesamiento - TODO" << std::endl;
+bool CompilerDriver::runPreprocessing(const std::vector<std::filesystem::path>& inputs,
+                                     const CompilerOptions& options) {
+    if (options.verbose) {
+        std::cout << "Ejecutando preprocesamiento..." << std::endl;
+    }
+
+    // Implementación básica: solo copiar archivos por ahora
+    for (const auto& input : inputs) {
+        std::filesystem::path outputFile = determineOutputFile({input}, options);
+
+        // Simular preprocesamiento básico
+        if (options.verbose) {
+            std::cout << "Preprocesado: " << input << " -> " << outputFile << std::endl;
+        }
+    }
+
     return true;
 }
 
-bool CompilerDriver::runCompilation(const std::vector<std::filesystem::path>& /*inputs*/,
-                                   const CompilerOptions& /*options*/) {
-    // TODO: Implementar compilación
-    std::cout << "Fase de compilación - TODO" << std::endl;
+bool CompilerDriver::runCompilation(const std::vector<std::filesystem::path>& inputs,
+                                   const CompilerOptions& options) {
+    if (options.verbose) {
+        std::cout << "Ejecutando compilación..." << std::endl;
+    }
+
+    // Simular compilación básica
+    for (const auto& input : inputs) {
+        std::filesystem::path outputFile = determineOutputFile({input}, options);
+
+        if (options.verbose) {
+            std::cout << "Compilando: " << input << " -> " << outputFile << std::endl;
+        }
+
+        // Verificar que el archivo existe
+        if (!std::filesystem::exists(input)) {
+            std::cerr << "Error: Archivo de entrada no encontrado: " << input << std::endl;
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -285,5 +314,6 @@ void CompilerDriver::reportTiming(double totalTime, const CompilerOptions& /*opt
 
     // TODO: Reportar tiempos por fase cuando estén implementadas
 }
+
 
 } // namespace cpp20::compiler

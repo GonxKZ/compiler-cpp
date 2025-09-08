@@ -15,8 +15,8 @@ namespace cpp20::compiler::backend::unwind {
 
 std::vector<UnwindCode> UnwindCodeGenerator::generateFromPrologue(
     const std::vector<uint8_t>& prologueBytes,
-    uint32_t stackSize,
-    uint8_t frameReg) {
+    [[maybe_unused]] uint32_t stackSize,
+    [[maybe_unused]] uint8_t frameReg) {
 
     std::vector<UnwindCode> codes;
     size_t offset = 0;
@@ -87,14 +87,14 @@ std::vector<UnwindCode> UnwindCodeGenerator::generateAlloc(uint8_t offset, uint3
 
     if (size <= 128) {
         // ALLOC_SMALL: size in 8-byte units (1-16)
-        uint8_t scaledSize = (size + 7) / 8; // Round up to 8-byte boundary
-        if (scaledSize > 16) scaledSize = 16;
+        uint32_t tempSize = (size + 7) / 8; // Round up to 8-byte boundary
+        uint8_t scaledSize = static_cast<uint8_t>(tempSize > 16 ? 16 : tempSize);
         codes.push_back(UnwindCode(offset, UnwindOpCode::ALLOC_SMALL, scaledSize - 1));
     } else if (size <= 512*1024) {
         // ALLOC_LARGE: size in 8-byte units
-        uint16_t scaledSize = (size + 7) / 8;
+        [[maybe_unused]] uint32_t tempSize = (size + 7) / 8;
         codes.push_back(UnwindCode(offset, UnwindOpCode::ALLOC_LARGE, 0)); // 16-bit size follows
-        // Note: In real implementation, we'd store scaledSize in the next UNWIND_CODE slot
+        // Note: In real implementation, we'd store tempSize in the next UNWIND_CODE slot
     } else {
         // Very large allocation - not typical
         codes.push_back(UnwindCode(offset, UnwindOpCode::ALLOC_LARGE, 1)); // 32-bit size
@@ -111,7 +111,7 @@ UnwindCode UnwindCodeGenerator::generateSaveNonvol(uint8_t offset, uint8_t reg, 
     }
 }
 
-UnwindCode UnwindCodeGenerator::generateSetFpreg(uint8_t offset, uint8_t reg, uint8_t frameOffset) {
+UnwindCode UnwindCodeGenerator::generateSetFpreg(uint8_t offset, uint8_t reg, [[maybe_unused]] uint8_t frameOffset) {
     return UnwindCode(offset, UnwindOpCode::SET_FPREG, reg);
 }
 

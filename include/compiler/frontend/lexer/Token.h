@@ -130,21 +130,34 @@ enum class TokenType {
 };
 
 /**
- * @brief Información de un token
+ * @brief Representa un token léxico en el código fuente
+ *
+ * Un token es la unidad básica de análisis léxico que contiene
+ * información sobre un elemento sintáctico identificado en el código.
  */
 class Token {
 public:
     /**
-     * @brief Constructor
+     * @brief Constructor principal
+     * @param type Tipo del token (keyword, identifier, literal, etc.)
+     * @param lexeme Texto original del token en el código fuente
+     * @param location Ubicación del token en el archivo fuente
+     * @param value Valor semántico adicional (opcional)
      */
     Token(TokenType type, const std::string& lexeme,
           const diagnostics::SourceLocation& location,
           const std::string& value = "");
 
     /**
-     * @brief Destructor
+     * @brief Destructor virtual para permitir herencia
      */
-    ~Token();
+    virtual ~Token();
+
+    /**
+     * @brief Constructor de copia generado por defecto
+     * Necesario debido al destructor virtual personalizado
+     */
+    Token(const Token&) = default;
 
     /**
      * @brief Obtener tipo del token

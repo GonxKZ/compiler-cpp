@@ -14,13 +14,45 @@
 
 namespace cpp20::compiler::backend::link {
 
+// ========================================================================
+// Tipos auxiliares para el linker
+// ========================================================================
+
+/**
+ * @brief Alias para el header COFF estándar
+ */
+using COFFHeader = coff::IMAGE_FILE_HEADER;
+
+/**
+ * @brief Alias para el header de sección COFF estándar
+ */
+using SectionHeader = coff::IMAGE_SECTION_HEADER;
+
+/**
+ * @brief Información de relocalización extendida
+ */
+struct RelocationInfo {
+    uint32_t virtualAddress;
+    uint32_t symbolIndex;
+    uint16_t type;
+    std::string symbolName;
+    uint32_t addend;
+    uint32_t sectionOffset;
+
+    RelocationInfo(uint32_t vaddr = 0, uint32_t symIdx = 0, uint16_t t = 0,
+                   const std::string& symName = "", uint32_t add = 0, uint32_t sectOff = 0)
+        : virtualAddress(vaddr), symbolIndex(symIdx), type(t), symbolName(symName),
+          addend(add), sectionOffset(sectOff) {}
+};
+
+
 /**
  * @brief Información de un símbolo en el proceso de linking
  */
 struct SymbolInfo {
     std::string name;
     uint32_t value;
-    uint16_t sectionIndex;
+    int16_t sectionNumber;  // Cambiado a int16_t para ser consistente con COFF
     uint16_t type;
     uint8_t storageClass;
     bool isDefined;
@@ -28,8 +60,8 @@ struct SymbolInfo {
     bool isWeak;
     std::string moduleName;  // Archivo objeto donde se define
 
-    SymbolInfo(const std::string& n = "", uint32_t val = 0, uint16_t sect = 0)
-        : name(n), value(val), sectionIndex(sect), type(0), storageClass(0),
+    SymbolInfo(const std::string& n = "", uint32_t val = 0, int16_t sect = 0)
+        : name(n), value(val), sectionNumber(sect), type(0), storageClass(0),
           isDefined(false), isExternal(false), isWeak(false) {}
 };
 

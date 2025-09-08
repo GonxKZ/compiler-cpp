@@ -36,6 +36,9 @@ ConstraintEvaluationResult ConstraintSolver::evaluateConstraint(
         case ast::ConstraintExpression::ConstraintType::LogicalOr:
             return evaluateDisjunction(constraint, bindings);
 
+        case ast::ConstraintExpression::ConstraintType::LogicalNot:
+            return evaluateNegation(constraint, bindings);
+
         default:
             ConstraintEvaluationResult result(ConstraintSatisfaction::Error);
             result.errorMessage = "Tipo de constraint no soportado";

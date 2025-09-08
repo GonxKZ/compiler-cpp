@@ -191,7 +191,7 @@ void ConstexprVM::clear() {
 }
 
 EvaluationContext ConstexprVM::evaluateExpression(const ast::ASTNode* node) {
-    if (!node) {
+    if (node == nullptr) {
         return createError("Expresión nula");
     }
 
@@ -208,11 +208,18 @@ EvaluationContext ConstexprVM::evaluateExpression(const ast::ASTNode* node) {
         case ast::ASTNodeKind::Identifier:
             return evaluateVariable(node);
 
+        // Literales básicos soportados
+        case ast::ASTNodeKind::IntegerLiteral:
+        case ast::ASTNodeKind::BooleanLiteral:
+        case ast::ASTNodeKind::CharacterLiteral:
+        case ast::ASTNodeKind::FloatingPointLiteral:
+        case ast::ASTNodeKind::StringLiteral:
+        case ast::ASTNodeKind::Literal:
+            return evaluateLiteral(node);
+
         default:
-            // Para tipos no soportados, devolvemos un valor por defecto
-            EvaluationContext ctx;
-            ctx.value = ConstexprValue(0);
-            return ctx;
+            // Para tipos no soportados, devolver error
+            return createError("Tipo de expresión no soportado en constexpr");
     }
 }
 
@@ -235,6 +242,9 @@ EvaluationContext ConstexprVM::evaluateLiteral(const ast::ASTNode* node) {
             break;
         case ast::ASTNodeKind::StringLiteral:
             result.value = ConstexprValue("hello"); // Valor dummy
+            break;
+        case ast::ASTNodeKind::Literal:
+            result.value = ConstexprValue(0); // Valor dummy genérico
             break;
         default:
             return createError("Literal no soportado");

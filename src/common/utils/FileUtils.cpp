@@ -66,7 +66,7 @@ void writeFile(const std::string& path, const std::string& content) {
         throw std::runtime_error("Cannot create file: " + path);
     }
 
-    file.write(content.data(), content.size());
+    file.write(content.data(), static_cast<std::streamsize>(content.size()));
     if (!file) {
         throw std::runtime_error("Cannot write to file: " + path);
     }

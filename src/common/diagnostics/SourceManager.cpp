@@ -75,7 +75,7 @@ SourceLocation SourceFile::locationForOffset(uint32_t offset) const {
 
     // Búsqueda binaria para encontrar la línea que contiene este offset
     auto it = std::upper_bound(lineOffsets.begin(), lineOffsets.end(), offset);
-    size_t lineIndex = it - lineOffsets.begin() - 1;
+    size_t lineIndex = static_cast<size_t>(it - lineOffsets.begin()) - 1;
 
     uint32_t line = static_cast<uint32_t>(lineIndex + 1);
     uint32_t column = offset - lineOffsets[lineIndex] + 1;
@@ -247,7 +247,7 @@ void SourceManager::preloadHeaders(const std::vector<std::filesystem::path>& pat
 // === GESTIÓN DE INCLUDES ===
 
 uint32_t SourceManager::findAndLoadInclude(const std::string& includeName,
-                                          uint32_t currentFileId,
+                                          [[maybe_unused]] uint32_t currentFileId,
                                           bool isSystemInclude) {
     // Verificar caché primero
     auto cacheIt = includeCache_.find(includeName);
@@ -562,6 +562,11 @@ std::string SourceManager::decodeContent(const std::string& rawContent, Encoding
     // Implementación simplificada - en un compilador real necesitaríamos
     // una biblioteca de codificación completa como ICU
     switch (encoding) {
+        case Encoding::UTF8:
+        case Encoding::ASCII:
+        case Encoding::UNKNOWN:
+            // Ya están en UTF-8 o formato compatible
+            return rawContent;
         case Encoding::UTF16_LE:
         case Encoding::UTF16_BE:
             // TODO: Implementar conversión UTF-16 a UTF-8

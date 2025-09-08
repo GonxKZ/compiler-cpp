@@ -9,6 +9,7 @@
 
 #include <compiler/backend/coff/COFFWriter.h>
 #include <compiler/backend/coff/COFFTypes.h>
+#include <compiler/backend/coff/COFFDumper.h>
 #include <iostream>
 #include <fstream>
 
@@ -73,7 +74,7 @@ COFFObject createHelloWorldCOFF() {
 /**
  * @brief Función principal del ejemplo
  */
-int main(int argc, char* argv[]) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
     std::cout << "Generando objeto COFF 'Hello World'..." << std::endl;
 
     // Crear objeto COFF

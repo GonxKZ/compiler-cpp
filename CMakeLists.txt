@@ -25,30 +25,41 @@ if(WIN32)
 
     # Configuración para MSVC
     if(MSVC)
-        # Opciones de compilación mejoradas para manejo de errores
+        # Configuración de compilación estricta pero razonable
         add_compile_options(
-            /W4                    # Nivel máximo de warnings
+            /W4                    # Nivel alto de warnings
             /WX                    # Tratar warnings como errores
-            /wd4100                # Permitir warnings sobre parámetros no utilizados
-            /wd4996                # Permitir warnings sobre funciones deprecated
             /permissive-           # Cumplimiento estricto del estándar
+            /std:c++20             # Forzar C++20
             /Zc:__cplusplus        # Reportar __cplusplus correctamente
-            /utf-8                 # Soporte UTF-8
-            /diagnostics:caret     # Ubicaciones precisas de errores
             /Zc:wchar_t            # wchar_t como tipo nativo
             /Zc:inline             # Remover funciones inline no utilizadas
-            /Zc:throwingNew        # Verificar excepciones en new
-            /Zc:strictStrings      # Tratamiento estricto de strings
-            /Zc:rvalueCast         # Conversión de rvalues estricta
-            /Zc:preprocessor       # Preprocesador mejorado (reemplaza experimental)
+            /GS                    # Buffer security checks
+            /Zi                    # Debug information
+            /O2                    # Optimizaciones
+            /utf-8                 # Soporte UTF-8
+
+            # Warnings críticos como errores
+            /we4101                # Unreferenced local variable
+            /we4189                # Local variable initialized but not referenced
+            /we4800                # Implicit conversion from int to bool
+
+            # Desactivar warnings de dependencias externas
+            /wd4514               # GTest inline functions
+            /wd4710               # iostream functions not inlined
+            /wd4820               # Padding added (alignment warnings)
+            /wd4625               # Copy constructor implicitly deleted
+            /wd4626               # Assignment operator implicitly deleted
+            /wd5027               # Move assignment operator implicitly deleted
         )
 
-        # Definiciones para compatibilidad
+        # Definiciones para compatibilidad y debugging avanzado
         add_compile_definitions(
             _CRT_SECURE_NO_WARNINGS
             NOMINMAX
             _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING
             _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+            _CRTDBG_MAP_ALLOC          # Memory leak detection
         )
 
         # Configuración de linker mejorada

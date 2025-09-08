@@ -20,8 +20,8 @@ namespace cpp20::compiler::modules {
 
 BinaryModuleInterface::BinaryModuleInterface(const std::string& moduleName)
     : moduleName_(moduleName) {
-    timestamp_ = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
+    timestamp_ = static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
 std::vector<uint8_t> BinaryModuleInterface::serialize() const {
@@ -87,7 +87,7 @@ std::vector<uint8_t> BinaryModuleInterface::serialize() const {
         data.insert(data.end(), entity.qualifiedName.begin(), entity.qualifiedName.end());
 
         // Flags (1 byte)
-        uint8_t flags = (entity.isInline ? 1 : 0) | (entity.isConstexpr ? 2 : 0);
+        uint8_t flags = static_cast<uint8_t>((entity.isInline ? 1 : 0) | (entity.isConstexpr ? 2 : 0));
         data.push_back(flags);
     }
 
@@ -479,7 +479,7 @@ bool ModuleCache::store(const std::string& moduleName, const BinaryModuleInterfa
             return false;
         }
 
-        file.write(reinterpret_cast<const char*>(data.data()), data.size());
+        file.write(reinterpret_cast<const char*>(data.data()), static_cast<std::streamsize>(data.size()));
         file.close();
 
         stats_.totalEntries++;

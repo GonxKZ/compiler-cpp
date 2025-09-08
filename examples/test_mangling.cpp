@@ -97,12 +97,12 @@ int main() {
     std::vector<MemberInfo> members = {
         MemberInfo("member1", "int", 0),
         MemberInfo("member2", "double", 0),
-        MemberInfo("member3", "char", 0, false, 0, false)
+        MemberInfo("member3", "char", 0)
     };
 
     std::vector<VirtualFunctionInfo> virtualFuncs = {
         VirtualFunctionInfo("virtualMethod1", "void ExampleBase::virtualMethod1(void)", 0),
-        VirtualFunctionInfo("virtualMethod2", "void ExampleBase::virtualMethod2(int)", 1, true)
+        VirtualFunctionInfo("virtualMethod2", "void ExampleBase::virtualMethod2(int)", 1)
     };
 
     auto layout = ClassLayoutGenerator::createPolymorphicClass("ExampleBase", members, virtualFuncs);

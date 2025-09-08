@@ -43,7 +43,7 @@ Lexer::Lexer(const std::string& source, diagnostics::DiagnosticEngine& diagEngin
     : source_(source), diagEngine_(diagEngine), config_(config),
       state_(), stats_() {
     stats_.totalCharacters = source_.size();
-    stats_.totalLines = std::count(source_.begin(), source_.end(), '\n') + 1;
+    stats_.totalLines = static_cast<size_t>(std::count(source_.begin(), source_.end(), '\n') + 1);
 }
 
 Lexer::~Lexer() = default;
@@ -88,7 +88,7 @@ void Lexer::reset() {
     currentTokenIndex_ = 0;
     stats_ = LexerStats();
     stats_.totalCharacters = source_.size();
-    stats_.totalLines = std::count(source_.begin(), source_.end(), '\n') + 1;
+    stats_.totalLines = static_cast<size_t>(std::count(source_.begin(), source_.end(), '\n') + 1);
 }
 
 // === FASES DE TRADUCCIÓN ===
@@ -495,8 +495,8 @@ bool LexerUtils::isValidDigit(char c, int base) {
     switch (base) {
         case 2: return c == '0' || c == '1';
         case 8: return c >= '0' && c <= '7';
-        case 10: return isdigit(c);
-        case 16: return isxdigit(c);
+        case 10: return isdigit(c) != 0;
+        case 16: return isxdigit(c) != 0;
         default: return false;
     }
 }

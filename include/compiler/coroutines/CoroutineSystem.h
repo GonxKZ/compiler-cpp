@@ -19,6 +19,9 @@
 // Configuración específica por compilador para corroutinas
 #if defined(_MSC_VER) && !defined(__clang__)
     // MSVC: intenta usar coroutines estándar si están disponibles
+    #ifndef __cpp_coroutines
+        #define __cpp_coroutines 201703L
+    #endif
     #if __cpp_coroutines >= 201703L
         #include <coroutine>
         #define COROUTINE_SUSPEND_ALWAYS std::suspend_always{}

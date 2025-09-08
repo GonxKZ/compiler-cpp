@@ -149,6 +149,7 @@ private:
     );
     void cleanupTempFiles(const CompilerOptions& options);
     void reportTiming(double totalTime, const CompilerOptions& options) const;
+
 };
 
 } // namespace cpp20::compiler
