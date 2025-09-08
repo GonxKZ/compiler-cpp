@@ -17,6 +17,9 @@ add_executable(test-mangling test_mangling.cpp)
 # Ejemplo de prueba del sistema de templates (Capa 5)
 add_executable(test-templates test_templates.cpp)
 
+# Ejemplo de prueba del sistema constexpr (Capa 6)
+add_executable(test-constexpr test_constexpr.cpp)
+
 # Enlazar con las librerías necesarias
 target_link_libraries(hello-coff
     PRIVATE
@@ -38,6 +41,13 @@ target_link_libraries(test-mangling
 
 target_link_libraries(test-templates
     PRIVATE
+        cpp20-compiler::backend
+        cpp20-compiler::common
+)
+
+target_link_libraries(test-constexpr
+    PRIVATE
+        cpp20-compiler::constexpr
         cpp20-compiler::backend
         cpp20-compiler::common
 )

@@ -4,7 +4,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <compiler/semantic/TemplateSystem.h>
+#include <compiler/templates/TemplateSystem.h>
 #include <compiler/common/diagnostics/DiagnosticEngine.h>
 
 using namespace cpp20::compiler::semantic;

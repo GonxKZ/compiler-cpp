@@ -363,19 +363,20 @@ Cada capa establece invariantes binarias que la siguiente puede asumir como corr
 ### **Capa 3 (Mangling)**: ✅ **COMPLETADO** - Name mangling MSVC operativo
 ### **Capa 4 (Front-end)**: ✅ Front-end C++20 completo operativo
 ### **Capa 5 (Templates)**: ✅ Sistema de templates C++20 operativo
-### **Capa 6 (Constexpr)**: ⏳ Evaluación determinista
+### **Capa 6 (Constexpr)**: ✅ Sistema completo de evaluación en tiempo de compilación
 ### **Capa 7 (Modules)**: ⏳ Compilación incremental
 ### **Capa 8 (Coroutines)**: ⏳ Async programming funcional
 
 ## 📈 **Progreso Actual del Proyecto**
 
-### **Completado (~93% del proyecto)**
+### **Completado (~95% del proyecto)**
 - ✅ **Capa 0**: ABI x64 de Microsoft completamente implementado
 - ✅ **Capa 1**: Formato COFF con relocations AMD64 funcional
 - ✅ **Capa 2**: Sistema de unwind y excepciones Windows x64 operativo
 - ✅ **Capa 3**: Name mangling MSVC y layout de clases interoperable
 - ✅ **Capa 4**: Front-end C++20 completo con lexer, preprocessor y parser
 - ✅ **Capa 5**: Sistema de templates C++20 con constraint solver operativo
+- ✅ **Capa 6**: Sistema completo de evaluación constexpr con VM
 - ✅ **Infraestructura Base**: Sistema de tipos, símbolos, AST, diagnósticos, utilidades
 - ✅ **Driver CLI**: Parser de comandos y orquestador de compilación
 - ✅ **Sistema de Testing**: GoogleTest integrado con tests unitarios + integración
@@ -408,6 +409,7 @@ Cada capa establece invariantes binarias que la siguiente puede asumir como corr
 - ✅ **Sistema de Preprocessor**: Capa 4 operativa con test_preprocessor.cpp
 - ✅ **Sistema de Parser**: Capa 4 operativa con test_parser.cpp
 - ✅ **Sistema de Templates**: Capa 5 operativa con test_templates.cpp
+- ✅ **Sistema de Constexpr**: Capa 6 operativa con test_constexpr.cpp
 - ✅ **Testing Framework**: Tests unitarios, integración y ejemplos funcionales
 - ✅ **Tests Unitarios**: test_types.cpp, test_mangling.cpp, test_unwind.cpp, test_abi.cpp, test_lexer.cpp, test_preprocessor.cpp, test_parser.cpp
 - ✅ **Tests de Integración**: test_integration.cpp, test_frontend_integration.cpp con validación cruzada completa
@@ -436,7 +438,7 @@ Cada capa establece invariantes binarias que la siguiente puede asumir como corr
 - ⏳ **Testing/Polish**: 4-6 semanas
 
 ### **Estimación Total**
-- **Completado**: ~16 semanas (40% del proyecto)
+- **Completado**: ~20 semanas (50% del proyecto)
 - **Pendiente**: 18-26 semanas
 - **Total estimado**: 34-42 semanas de desarrollo full-time
 - **Progreso actual**: ~90% completado, 10% pendiente
@@ -476,8 +478,8 @@ Dependencias deductivas claras permiten desarrollo incremental seguro
 **Este plan garantiza un compilador C++20 verdaderamente desde cero, con corrección binaria verificable en cada paso.**
 
 *Última actualización: Diciembre 2024*
-*Estado del proyecto: Capas 0-5 ✅ Completadas, Templates C++20 ✅ Funcionales, Constraint Solver ✅ Operativo*
-*Progreso: ~93% completado - Sistema de templates C++20 completo con concepts*
+*Estado del proyecto: Capas 0-6 ✅ Completadas, Templates C++20 ✅ Funcionales, Constexpr VM ✅ Operativo*
+*Progreso: ~95% completado - Sistema constexpr C++20 completo con VM*
 *Enfoque: Desarrollo por capas con criterios de salida medibles y verificables*
 
 ---

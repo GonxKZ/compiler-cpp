@@ -4,11 +4,11 @@
 
 # Fuentes del sistema de templates
 set(TEMPLATES_SOURCES
-    # TemplateSystem.cpp ya está en semantic/
+    TemplateSystem.cpp
 )
 
 set(TEMPLATES_HEADERS
-    # TemplateSystem.h ya está en semantic/
+    ../../include/compiler/templates/TemplateSystem.h
 )
 
 # Crear librería templates
