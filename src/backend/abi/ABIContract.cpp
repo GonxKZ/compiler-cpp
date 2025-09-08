@@ -5,6 +5,7 @@
 
 #include <compiler/backend/abi/ABIContract.h>
 #include <algorithm>
+#include <cstdint>
 
 namespace cpp20::compiler::backend::abi {
 

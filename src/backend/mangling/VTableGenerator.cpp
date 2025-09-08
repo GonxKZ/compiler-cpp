@@ -58,7 +58,7 @@ RTTIInfo VTableGenerator::generateRTTIInfo(const ClassLayout& layout) {
         virtualFuncs.begin(),
         virtualFuncs.end(),
         [](const VirtualFunctionInfo& vf) {
-            return vf.functionName.find("~") == 0; // Destructor
+            return vf.name.find("~") == 0; // Destructor
         }
     );
 
@@ -69,7 +69,7 @@ std::vector<uint8_t> VTableGenerator::generateVTableData(const std::vector<VTabl
     std::vector<uint8_t> data;
 
     // Cada entrada es un puntero de 8 bytes en x64
-    for (const auto& entry : entries) {
+    for ([[maybe_unused]] const auto& entry : entries) {
         // En un compilador real, aquí se generarían los punteros reales a las funciones
         // Por ahora, generamos datos dummy
         for (int i = 0; i < 8; ++i) {
@@ -114,10 +114,10 @@ std::vector<VTableEntry> VTableGenerator::generateOwnVirtualEntries(const ClassL
     const auto& virtualFuncs = layout.getVirtualFunctions();
     for (const auto& vfunc : virtualFuncs) {
         // Generar nombre mangled
-        std::string mangledName = nameMangler_.mangleBaseName(vfunc.functionName);
+        std::string mangledName = nameMangler_.mangleName(vfunc.name);
 
         entries.emplace_back(
-            vfunc.functionName,
+            vfunc.name,
             mangledName,
             0, // Offset se asigna después
             vfunc.isPureVirtual,
@@ -179,8 +179,8 @@ std::vector<VTableEntry> VTableGenerator::generateThunks(const ClassLayout& layo
 
             // Generar thunk para cada función virtual
             for (const auto& vfunc : layout.getVirtualFunctions()) {
-                std::string thunkName = generateThunkName(vfunc.functionName, offset);
-                std::string mangledThunk = nameMangler_.mangleBaseName(thunkName);
+                std::string thunkName = generateThunkName(vfunc.name, offset);
+                std::string mangledThunk = nameMangler_.mangleName(thunkName);
 
                 entries.emplace_back(
                     thunkName,

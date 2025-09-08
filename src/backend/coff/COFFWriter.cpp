@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <ctime>
 #include <cstring>
+#include <iostream>
 
 namespace cpp20::compiler::backend::coff {
 

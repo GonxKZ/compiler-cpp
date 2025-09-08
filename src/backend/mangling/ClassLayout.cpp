@@ -14,7 +14,7 @@ namespace cpp20::compiler::backend::mangling {
 
 ClassLayout::ClassLayout(const std::string& className, const std::string& scope)
     : className_(className), scope_(scope), totalSize_(0), alignment_(1),
-      vtableOffset_(0), layoutComputed_(false), nameMangler_(className, scope) {
+      vtableOffset_(0), layoutComputed_(false), nameMangler_() {
 }
 
 ClassLayout::~ClassLayout() = default;
@@ -162,25 +162,11 @@ void ClassLayout::computeSizeAndAlignment() {
 
 size_t ClassLayout::getTypeSize(const std::string& typeName) const {
     // Tabla simplificada de tamaños de tipos
-    static const std::unordered_map<std::string, size_t> typeSizes = {
-        {"bool", 1},
-        {"char", 1},
-        {"short", 2},
-        {"int", 4},
-        {"long", 4},
-        {"long long", 8},
-        {"float", 4},
-        {"double", 8},
-        {"long double", 8},
-        {"void*", 8},
-        {"char*", 8},
-        {"int*", 8}
-    };
-
-    auto it = typeSizes.find(typeName);
-    if (it != typeSizes.end()) {
-        return it->second;
-    }
+    if (typeName == "bool" || typeName == "char") return 1;
+    if (typeName == "short") return 2;
+    if (typeName == "int" || typeName == "long" || typeName == "float") return 4;
+    if (typeName == "long long" || typeName == "double" || typeName == "long double") return 8;
+    if (typeName.find('*') != std::string::npos) return 8; // Punteros
 
     // Para tipos no encontrados, asumir tamaño de puntero
     return 8;
@@ -188,25 +174,11 @@ size_t ClassLayout::getTypeSize(const std::string& typeName) const {
 
 size_t ClassLayout::getTypeAlignment(const std::string& typeName) const {
     // Tabla simplificada de alineaciones de tipos
-    static const std::unordered_map<std::string, size_t> typeAlignments = {
-        {"bool", 1},
-        {"char", 1},
-        {"short", 2},
-        {"int", 4},
-        {"long", 4},
-        {"long long", 8},
-        {"float", 4},
-        {"double", 8},
-        {"long double", 8},
-        {"void*", 8},
-        {"char*", 8},
-        {"int*", 8}
-    };
-
-    auto it = typeAlignments.find(typeName);
-    if (it != typeAlignments.end()) {
-        return it->second;
-    }
+    if (typeName == "bool" || typeName == "char") return 1;
+    if (typeName == "short") return 2;
+    if (typeName == "int" || typeName == "long" || typeName == "float") return 4;
+    if (typeName == "long long" || typeName == "double" || typeName == "long double") return 8;
+    if (typeName.find('*') != std::string::npos) return 8; // Punteros
 
     // Para tipos no encontrados, asumir alineación de puntero
     return 8;
@@ -240,11 +212,11 @@ bool ClassLayout::validateMSVCRules() const {
 }
 
 std::string ClassLayout::generateVTableName() const {
-    return nameMangler_.generateVTableName();
+    return nameMangler_.generateVTableName(className_, scope_);
 }
 
 std::string ClassLayout::generateTypeInfoName() const {
-    return nameMangler_.generateTypeInfoName();
+    return nameMangler_.generateTypeInfoName(className_, scope_);
 }
 
 bool ClassLayout::isMSVCCompatible() const {

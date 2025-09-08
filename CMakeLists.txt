@@ -28,6 +28,9 @@ if(WIN32)
         # Opciones de compilación mejoradas para manejo de errores
         add_compile_options(
             /W4                    # Nivel máximo de warnings
+            /WX                    # Tratar warnings como errores
+            /wd4100                # Permitir warnings sobre parámetros no utilizados
+            /wd4996                # Permitir warnings sobre funciones deprecated
             /permissive-           # Cumplimiento estricto del estándar
             /Zc:__cplusplus        # Reportar __cplusplus correctamente
             /utf-8                 # Soporte UTF-8
@@ -35,6 +38,9 @@ if(WIN32)
             /Zc:wchar_t            # wchar_t como tipo nativo
             /Zc:inline             # Remover funciones inline no utilizadas
             /Zc:throwingNew        # Verificar excepciones en new
+            /Zc:strictStrings      # Tratamiento estricto de strings
+            /Zc:rvalueCast         # Conversión de rvalues estricta
+            /Zc:preprocessor       # Preprocesador mejorado (reemplaza experimental)
         )
 
         # Definiciones para compatibilidad

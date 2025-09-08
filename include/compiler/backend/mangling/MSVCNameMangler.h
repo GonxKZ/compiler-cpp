@@ -162,6 +162,31 @@ public:
     std::string mangleFunctionType(const std::string& returnType,
                                    const std::vector<std::string>& paramTypes);
 
+    /**
+     * @brief Genera nombre mangled para vtable
+     * @param className Nombre de la clase
+     * @param scope Ámbito de la clase
+     * @return Nombre mangled de la vtable
+     */
+    std::string generateVTableName(const std::string& className,
+                                   const std::string& scope = "") const;
+
+    /**
+     * @brief Genera nombre mangled para type_info
+     * @param className Nombre de la clase
+     * @param scope Ámbito de la clase
+     * @return Nombre mangled del type_info
+     */
+    std::string generateTypeInfoName(const std::string& className,
+                                     const std::string& scope = "") const;
+
+    /**
+     * @brief Manglea un nombre base (método público)
+     * @param name Nombre a manglear
+     * @return Nombre mangled
+     */
+    std::string mangleName(const std::string& name) const;
+
 private:
     /**
      * @brief Códigos base para tipos básicos MSVC

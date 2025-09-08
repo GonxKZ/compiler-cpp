@@ -129,17 +129,17 @@ CompilationResult CompilerDriver::compile(
         // Ejecutar fases de compilación
         if (options.preprocessOnly) {
             result.success = runPreprocessing(inputFiles, options);
-            result.outputFiles = {determineOutputFile(inputFiles, options)};
+            result.outputFiles = {determineOutputFile(inputFiles, options).string()};
         } else if (options.compileOnly) {
             result.success = runCompilation(inputFiles, options);
-            result.outputFiles = {determineOutputFile(inputFiles, options)};
+            result.outputFiles = {determineOutputFile(inputFiles, options).string()};
         } else if (options.assembleOnly) {
             result.success = runAssembly(inputFiles, options);
-            result.outputFiles = {determineOutputFile(inputFiles, options)};
+            result.outputFiles = {determineOutputFile(inputFiles, options).string()};
         } else {
             // Compilación completa
             result.success = runLinking(inputFiles, options);
-            result.outputFiles = {determineOutputFile(inputFiles, options)};
+            result.outputFiles = {determineOutputFile(inputFiles, options).string()};
         }
 
     } catch (const std::exception& e) {

@@ -138,6 +138,11 @@ public:
     std::string generateTypeInfoName() const;
 
     /**
+     * @brief Obtiene el nombre de la clase
+     */
+    std::string getClassName() const { return className_; }
+
+    /**
      * @brief Verifica compatibilidad con MSVC
      */
     bool isMSVCCompatible() const;

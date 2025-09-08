@@ -179,6 +179,11 @@ public:
         return (CALLEE_SAVED_REGS & (1 << registerIndex)) != 0;
     }
 
+    /**
+     * @brief Alinea un offset al siguiente límite
+     */
+    static size_t alignOffset(size_t offset, size_t alignment);
+
     // ========================================================================
     // CONSTANTES DE VALIDACIÓN
     // ========================================================================

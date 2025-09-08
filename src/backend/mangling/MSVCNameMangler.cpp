@@ -7,6 +7,7 @@
 #include <sstream>
 #include <algorithm>
 #include <unordered_map>
+#include <iomanip>
 
 namespace cpp20::compiler::backend::mangling {
 
@@ -413,6 +414,34 @@ std::string MangledNameUtils::extractBaseName(const std::string& mangled) {
 bool MangledNameUtils::namesEqual(const std::string& name1, const std::string& name2) {
     // Comparación simplificada - en un compilador real esto sería más complejo
     return name1 == name2;
+}
+
+// ============================================================================
+// Métodos adicionales para vtable y type_info
+// ============================================================================
+
+std::string MSVCNameMangler::generateVTableName(const std::string& className,
+                                               const std::string& scope) const {
+    // Formato MSVC para vtable: ??_7ClassName@@6B@
+    // ??_7 indica vtable, @@6B@ es el sufijo estándar
+    std::string mangledScope = mangleScope(scope);
+    std::string mangledName = mangleBaseName(className);
+
+    return "??_7" + mangledName + mangledScope + "@@6B@";
+}
+
+std::string MSVCNameMangler::generateTypeInfoName(const std::string& className,
+                                                 const std::string& scope) const {
+    // Formato MSVC para type_info: ??_R0?AVClassName@@@8
+    // ??_R0 indica type_info, ?AV indica class virtual
+    std::string mangledScope = mangleScope(scope);
+    std::string mangledName = mangleBaseName(className);
+
+    return "??_R0?AV" + mangledName + mangledScope + "@@@8";
+}
+
+std::string MSVCNameMangler::mangleName(const std::string& name) const {
+    return mangleBaseName(name);
 }
 
 } // namespace cpp20::compiler::backend::mangling

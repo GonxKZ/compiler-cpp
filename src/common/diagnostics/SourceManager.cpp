@@ -39,7 +39,7 @@ SourceFile::SourceFile(uint32_t id, std::filesystem::path path, std::string rawC
     normalizedContent = std::move(result);
 
     // Calcular offsets de línea en contenido normalizado
-    lineOffsets = computeLineOffsets(normalizedContent);
+    lineOffsets = SourceFile::computeLineOffsets(normalizedContent);
 
     // Inicializar display name
     displayName = this->path.filename().string();
@@ -55,7 +55,7 @@ SourceFile::SourceFile(uint32_t id, std::filesystem::path path, std::string rawC
     }
 }
 
-std::vector<uint32_t> SourceFile::computeLineOffsets(const std::string& content) const {
+std::vector<uint32_t> SourceFile::computeLineOffsets(const std::string& content) {
     std::vector<uint32_t> offsets;
     offsets.push_back(0); // Primera línea comienza en offset 0
 
@@ -503,18 +503,6 @@ uint32_t SourceManager::assignFileId() {
     return nextFileId_++;
 }
 
-std::vector<uint32_t> SourceManager::computeLineOffsets(const std::string& content) const {
-    std::vector<uint32_t> offsets;
-    offsets.push_back(0);
-
-    for (size_t i = 0; i < content.size(); ++i) {
-        if (content[i] == '\n') {
-            offsets.push_back(static_cast<uint32_t>(i + 1));
-        }
-    }
-
-    return offsets;
-}
 
 bool SourceManager::loadFileContent(const std::filesystem::path& path,
                                    std::string& content,

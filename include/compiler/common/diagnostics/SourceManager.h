@@ -57,6 +57,9 @@ struct SourceFile {
     std::string getText(SourceRange range) const;
     std::string getNormalizedContent() const { return normalizedContent; }
 
+    // Función estática auxiliar para calcular offsets de línea
+    static std::vector<uint32_t> computeLineOffsets(const std::string& content);
+
     // Soporte para mapeos de preprocesador
     void addMacroExpansion(uint32_t offset, const std::string& expansion);
     std::optional<std::string> getMacroExpansion(uint32_t offset) const;
