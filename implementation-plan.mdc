@@ -1,0 +1,264 @@
+# Plan de Implementación - Compilador C++20 para Windows x64
+
+## Visión General del Proyecto
+
+Este proyecto implementa un compilador C++20 completo desde cero, orientado específicamente a la plataforma Windows x64. La arquitectura combina un front-end personalizado con back-end basado en LLVM para optimizar la generación de código y asegurar compatibilidad con el ecosistema PE/COFF.
+
+**Especificación de Referencia**: Borrador final C++20 (N4861) y su versión navegable en línea
+**Objetivo Binario**: ABI x64 de Microsoft y formato PE/COFF
+**Enlazador**: LLD integrado
+**Arquitectura**: Front-end propio + Back-end LLVM
+
+## Alcance Inicial del Estándar
+
+**Núcleo Base**: C++17 completo con extensiones selectivas de C++20
+- ✅ constexpr extendido (constinit, consteval)
+- ✅ lambdas genéricas y captura mejorada
+- ✅ auto/decltype mejorados
+- ✅ using declarations y aliases
+- ✅ excepciones y manejo de errores
+- ✅ RTTI (Run-Time Type Information)
+
+**Extensiones Progresivas** (ordenadas por prioridad):
+- 🔄 Conceptos y restricciones (requires, concept)
+- 🔄 Módulos C++20 (module, import, export)
+- 🔄 Corroutinas (co_await, co_yield, co_return)
+
+## Arquitectura de Tres Etapas (Bootstrap)
+
+### Etapa A: Bootstrap Inicial
+**Estado**: ✅ Completado - Framework base establecido
+**Objetivo**: Compilador en C++17 usando compilador existente
+**Alcance**: Subconjunto C/"C con clases" + IR LLVM bien formado
+
+**TODOs Completados**:
+- ✅ Configurar estructura de proyecto modular
+- ✅ Establecer sistema de construcción CMake
+- ✅ Crear framework base del compilador
+- ✅ Implementar front-end mínimo (lexer básico)
+- ✅ Emitir IR LLVM para funciones básicas
+- ✅ Control de flujo básico (if/while)
+- ✅ Estructuras y tipos básicos
+- ✅ Llamadas de funciones simples
+
+### Etapa B: Expansión del Front-end
+**Estado**: 🔄 En Progreso
+**Objetivo**: Cobertura sustancial de C++20 + semántica completa
+**Alcance**: Plantillas, constexpr, módulos, ABI Microsoft completo
+
+#### TODOs Pendientes - Front-end Core:
+
+**1. Preprocesador Completo**
+- ✅ Implementar las ocho fases de traducción de [lex.phases]
+- 🔄 Expander de macros con prevención de reexpansión
+- 🔄 Control de __VA_ARGS__ y mapeo de ubicaciones
+- 🔄 Soporte para header units
+- 🔄 Coexistencia con módulos C++20
+
+**2. Parser Avanzado**
+- ✅ Descenso recursivo + tabla de precedencias Pratt
+- 🔄 Tentative parsing con retroceso acotado
+- 🔄 Oráculo semántico para ambigüedades
+- 🔄 Predicados semánticos de ayuda al parser
+- 🔄 Gramáticas parciales para declaraciones/declaradores
+- 🔄 Gramáticas para requires-cláusulas y expressions
+- 🔄 Telemetría de ambigüedades
+
+**3. Sistema de Tipos y Símbolos**
+- ✅ AST fuertemente tipado
+- ✅ Sistema de símbolos por ámbitos
+- 🔄 Motor de tipos completo (cualificaciones, referencias, punteros)
+- 🔄 Categorías de valor y conversión implícita
+- 🔄 Deducción de auto y dependent types
+- 🔄 Representación precisa de expresiones dependientes
+- 🔄 Diferenciación de entidades (linkage, visibilidad, almacenamiento)
+
+**4. Motor de Lookup**
+- ✅ Búsqueda no calificada y calificada
+- 🔄 ADL (Argument Dependent Lookup)
+- 🔄 Two-phase name lookup en plantillas
+- 🔄 Análisis semántico en dos fases
+
+#### TODOs Pendientes - Templates y Concepts:
+
+**5. Sistema de Plantillas**
+- 🔄 Deducción de argumentos con SFINAE
+- 🔄 Resolución de sobrecarga con conversiones implícitas
+- 🔄 Ordenación parcial de plantillas y especializaciones
+- 🔄 Constraint solver sobre AST de constraints
+- 🔄 Sustitución perezosa en constraints
+- 🔄 Serialización de instantiation contexts
+- 🔄 Manejo de fallos en requires (no como errores)
+
+**6. Constexpr y Evaluación en Tiempo de Compilación**
+- 🔄 Intérprete parcial del lenguaje
+- 🔄 VM para funciones constexpr
+- 🔄 Memoria abstracta y reglas de constant evaluation
+- 🔄 Cacheo de resultados por árbol y firma
+- 🔄 Diagnósticos con traza de evaluación
+- 🔄 Plegado de expresiones estáticas
+
+**7. Módulos C++20**
+- 🔄 Generación y consumo de BMI (Binary Module Interface)
+- 🔄 Soporte para formato PCM (Clang) e IFC (Microsoft)
+- 🔄 Dependency scanner para módulos
+- 🔄 Grafo acíclico de dependencias
+- 🔄 Cache de BMIs con invalidación
+- 🔄 Header units e import <header>
+
+**8. Corroutinas C++20**
+- 🔄 Transformación de funciones con co_*
+- 🔄 Semántica de promesa y awaitables
+- 🔄 Generación de intrínsecos llvm.coro.*
+- 🔄 Comprobaciones estáticas de tipos de promesa
+- 🔄 Validación de operadores await_*
+- 🔄 Prevención de escapes indebidos
+
+#### TODOs Pendientes - Back-end y ABI:
+
+**9. Generación de LLVM IR**
+- 🔄 SSA desde AST tipado
+- 🔄 ABI x64 Microsoft (registro de argumentos, shadow space)
+- 🔄 Preservación de registros no volátiles
+- 🔄 Name mangling compatible con MSVC
+- 🔄 Disposición de vtables y RTTI
+- 🔄 Metadatos de excepciones para Windows EH
+
+**10. Manejo de Excepciones y RTTI**
+- 🔄 Modelo EH de Windows en LLVM
+- 🔄 Personality functions e invoke/landing pads
+- 🔄 Estructuras de tipo_info
+- 🔄 Interoperabilidad con MSVC
+- 🔄 Pruebas cruzadas de excepciones
+
+**11. Driver del Compilador**
+- 🔄 CLI compatible con expectativas modernas
+- 🔄 Modos -S, -c, --emit-bmi
+- 🔄 Detección de entorno Windows SDK/CRT
+- 🔄 Response files y compatibilidad cl/clang-cl
+- 🔄 Target x86_64-pc-windows-msvc por defecto
+
+### Etapa C: Auto-compilación
+**Estado**: ⏳ Pendiente
+**Objetivo**: Migrar código del compilador al subconjunto soportado
+**Alcance**: Auto-compilación completa y cierre del bootstrap
+
+#### TODOs Pendientes - Auto-compilación:
+
+**12. Migración del Código Base**
+- ⏳ Portar código fuente a subconjunto C++20 soportado
+- ⏳ Resolver dependencias circulares en bootstrap
+- ⏳ Validar auto-compilación exitosa
+- ⏳ Optimizaciones del compilador self-hosted
+
+## Infraestructura de Desarrollo
+
+### Sistema de Construcción
+- ✅ CMake 3.20+ con presets modernos
+- ✅ Estructura modular de directorios
+- ✅ Configuración para múltiples targets
+- 🔄 Integración con LLVM (versión específica TBD)
+- 🔄 Configuración de LLD como enlazador
+
+### Versiones de Dependencias
+**LLVM**: Versión 15.0+ (compatibilidad Windows estable)
+**LLD**: Versión correspondiente a LLVM
+**Windows SDK**: 10.0.19041.0+
+**CRT**: Microsoft Visual C++ 2022
+
+### Artefactos de Salida Soportados
+- ✅ .obj COFF (objetos compilados)
+- 🔄 .lib estático (bibliotecas)
+- 🔄 .pdb opcional (debugging symbols)
+- 🔄 .exe/.dll (ejecutables y bibliotecas dinámicas)
+
+## Sistema de Pruebas
+
+### Estrategia de Testing
+1. **Unidad**: Tests micro para cada fase
+2. **Integración**: Generación de .obj y linking
+3. **Conformidad**: Suites inspiradas en tests públicos
+4. **Rendimiento**: Benchmarks con/sin optimizaciones
+
+#### TODOs Pendientes - Testing:
+
+**13. Framework de Pruebas**
+- 🔄 Tests unitarios para lexer/preprocesador
+- 🔄 Tests de integración para parser/semántica
+- 🔄 Tests de conformidad C++20
+- 🔄 Fixture para compilación y ejecución
+- 🔄 Matrices de pruebas para lookup/ADL
+- 🔄 Medición de rendimiento con BMIs
+
+**14. Hitos de Validación**
+- 🔄 Hello World C sin CRT personalizado
+- 🔄 Binario C++ con clases/herencia/RTTI
+- 🔄 Ejecutable con templates complejos
+- 🔄 Ejemplo constexpr avanzado
+- 🔄 Módulo math con BMI
+- 🔄 Corroutina funcional completa
+
+## Interoperabilidad y Compatibilidad
+
+### Ecosistema Windows
+- 🔄 Convención de llamadas MS x64
+- 🔄 Name mangling MSVC
+- 🔄 PE/COFF structure compliance
+- 🔄 Utilidades de verificación (dumpbin, llvm-readobj)
+
+#### TODOs Pendientes - Interop:
+
+**15. Verificación Binaria**
+- 🔄 Verificador de nombres decorados
+- 🔄 Validación estructura PE/COFF
+- 🔄 Pruebas de excepciones cruzadas
+- 🔄 Virtual dispatch entre módulos
+
+## Métricas de Éxito
+
+### Criterios de Completitud por Etapa
+
+**Etapa A (Bootstrap Inicial)**:
+- [x] Compilación exitosa de código C básico
+- [x] Generación de IR LLVM válido
+- [ ] Linking con LLD exitoso
+- [ ] Ejecución correcta del binario resultante
+
+**Etapa B (Expansión)**:
+- [ ] Cobertura >80% de features C++17
+- [ ] Soporte completo para templates básicos
+- [ ] Constexpr funcional
+- [ ] Linking con CRT de Microsoft
+- [ ] Interoperabilidad básica con MSVC
+
+**Etapa C (Auto-compilación)**:
+- [ ] Auto-compilación exitosa
+- [ ] Paridad funcional con versión host
+- [ ] Optimizaciones self-hosted
+- [ ] Cierre completo del bootstrap
+
+## Riesgos y Mitigaciones
+
+### Riesgos Técnicos
+1. **Complejidad del Parser**: Mitigación - implementación incremental con tests exhaustivos
+2. **ABI Compliance**: Mitigación - verificación constante contra documentación Microsoft
+3. **Performance**: Mitigación - profiling continuo y optimizaciones dirigidas
+4. **Interoperabilidad**: Mitigación - tests cruzados con MSVC regularmente
+
+### Riesgos de Proyecto
+1. **Alcance**: Mitigación - desarrollo por fases con criterios de salida claros
+2. **Dependencias**: Mitigación - versiones pinned de LLVM/LLD
+3. **Testing**: Mitigación - coverage mínimo 80% en código crítico
+
+## Timeline Estimado
+
+- **Etapa A**: 4-6 semanas (Framework base)
+- **Etapa B**: 12-16 semanas (Features principales)
+- **Etapa C**: 4-6 semanas (Auto-compilación)
+- **Testing y Polish**: 4-6 semanas
+- **Total**: 24-34 semanas de desarrollo full-time
+
+---
+
+*Última actualización: $(date)*
+*Estado del proyecto: Etapa A completada, Etapa B en progreso*

@@ -1,57 +1,75 @@
-# Build directories
+# =============================================================================
+# GitIgnore para Compilador C++20
+# =============================================================================
+
+# Directorios de build
 build/
 cmake-build-*/
 out/
 bin/
-obj/
+lib/
 
-# IDEs
+# Archivos de IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
+# Archivos temporales
+*.tmp
+*.temp
+.cache/
+
+# Logs
+*.log
+logs/
+
+# Archivos de sistema Windows
 Thumbs.db
+Desktop.ini
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Archivos de backup
+*.bak
+*.backup
+*~
 
-# Precompiled Headers
-*.gch
-*.pch
+# Dependencias descargadas
+third_party/downloads/
+third_party/build/
 
-# Compiled Dynamic libraries
+# Archivos de testing
+tests/output/
+tests/temp/
+*.test
+
+# LLVM/Clang específicos
+*.bc
+*.ll
+
+# Ejecutables generados
+*.exe
+*.dll
 *.so
 *.dylib
-*.dll
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+# Archivos objeto
+*.o
+*.obj
 *.lib
+*.a
 
-# Executables
-*.exe
-*.out
-*.app
+# Archivos de debug
+*.pdb
+*.dSYM/
 
-# CMake generated files
+# Coverage
+*.gcda
+*.gcno
+*.gcov
+coverage/
+
+# CMake
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
@@ -60,51 +78,20 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
-# Qt generated files
-*.pro.user
-*.pro.user.*
-*.qbs.user
-*.qbs.user.*
-*.moc
-moc_*.cpp
-moc_*.h
-qrc_*.cpp
-ui_*.h
-Makefile*
-*build-*
+# Makefiles generados
+Makefile
+*.make
 
-# Visual Studio
-.vs/
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
-*.suo
-*.user
-*.aps
-*.pch
-*.vspscc
-*_i.c
-*_p.c
-*.ncb
-*.suo
-*.tlb
-*.tlh
-*.tmp
-*.tmp_proj
-*.log
-*.vspscc
-*.vssscc
-.builds
-*.pidb
-*.log
-*.svclog
-*.scc
+# Paquetes
+*.deb
+*.rpm
+*.tar.gz
+*.zip
 
-# Logs
-*.log
-logs/
+# Documentación generada
+docs/build/
+docs/doxygen/
 
-# Temporary files
-*.tmp
-*.temp
+# Archivos de configuración local
+config.local.cmake
+local_config.cmake
