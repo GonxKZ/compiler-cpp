@@ -34,7 +34,9 @@ bool COFFWriter::writeObject(const COFFObject& object, const std::string& filena
         return true;
 
     } catch (const std::exception& e) {
-        // TODO: Report error through diagnostic engine
+        // Report error - TODO: Use diagnostic engine when available
+        std::cerr << "Error writing COFF object to file '" << filename
+                  << "': " << e.what() << std::endl;
         return false;
     }
 }

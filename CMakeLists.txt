@@ -25,8 +25,31 @@ if(WIN32)
 
     # Configuración para MSVC
     if(MSVC)
-        add_compile_options(/W4 /permissive- /Zc:__cplusplus /utf-8)
-        add_compile_definitions(_CRT_SECURE_NO_WARNINGS NOMINMAX)
+        # Opciones de compilación mejoradas para manejo de errores
+        add_compile_options(
+            /W4                    # Nivel máximo de warnings
+            /permissive-           # Cumplimiento estricto del estándar
+            /Zc:__cplusplus        # Reportar __cplusplus correctamente
+            /utf-8                 # Soporte UTF-8
+            /diagnostics:caret     # Ubicaciones precisas de errores
+            /Zc:wchar_t            # wchar_t como tipo nativo
+            /Zc:inline             # Remover funciones inline no utilizadas
+            /Zc:throwingNew        # Verificar excepciones en new
+        )
+
+        # Definiciones para compatibilidad
+        add_compile_definitions(
+            _CRT_SECURE_NO_WARNINGS
+            NOMINMAX
+            _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING
+            _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+        )
+
+        # Configuración de linker mejorada
+        add_link_options(
+            /DEBUG:FULL           # Información de debug completa
+            /INCREMENTAL:NO       # Linker no incremental para builds limpios
+        )
     endif()
 endif()
 

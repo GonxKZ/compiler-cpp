@@ -793,10 +793,11 @@ bool ModuleSystem::processModuleDeclaration(const std::filesystem::path& filePat
     return true;
 }
 
-bool ModuleSystem::processImportDeclaration(const std::filesystem::path& filePath,
-                                          const std::string& importName) {
+bool ModuleSystem::processImportDeclaration(const std::filesystem::path& /*filePath*/,
+                                          const std::string& /*importName*/) {
     // For now, just track the import
     // In a full implementation, this would load the imported module
+    // TODO: Implement actual module loading and dependency resolution
     return true;
 }
 

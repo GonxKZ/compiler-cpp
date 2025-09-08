@@ -1,43 +1,35 @@
 /**
  * @file ABIContract.cpp
- * @brief Implementación del contrato binario ABI para x86_64-pc-windows-msvc
+ * @brief Implementación completa del contrato binario para x86_64-pc-windows-msvc
  */
 
 #include <compiler/backend/abi/ABIContract.h>
-#include <cassert>
 #include <algorithm>
 
 namespace cpp20::compiler::backend::abi {
 
-// ========================================================================
-// FUNCIONES DE VALIDACIÓN DEL ABI
-// ========================================================================
+// ============================================================================
+// IMPLEMENTACIÓN DE FUNCIONES ESTÁTICAS
+// ============================================================================
 
 bool ABIContract::validateFrameLayout(const FrameLayout& layout) {
-    // Verificar tamaño total
+    // Validar tamaño total
     if (layout.totalSize > MAX_FRAME_SIZE) {
         return false;
     }
 
-    // Verificar alineación del stack
+    // Validar alineación
     if (!isStackAligned(layout.totalSize)) {
         return false;
     }
 
-    // Verificar que el espacio de sombra esté presente
-    if (layout.shadowSpaceSize != SHADOW_SPACE_SIZE) {
+    // Validar que el área de parámetros tenga el tamaño correcto
+    if (layout.parameterAreaSize < SHADOW_SPACE_SIZE) {
         return false;
     }
 
-    // Verificar offsets razonables
-    if (layout.returnAddressOffset >= layout.totalSize ||
-        layout.savedRbpOffset >= layout.totalSize) {
-        return false;
-    }
-
-    // Verificar que el área de parámetros tenga sentido
-    if (layout.parameterAreaSize > 0 &&
-        layout.firstParameterOffset >= layout.totalSize) {
+    // Validar offsets
+    if (layout.returnAddressOffset != 0) {
         return false;
     }
 
@@ -49,25 +41,26 @@ ABIContract::ParameterInfo ABIContract::classifyParameter(
 
     ParameterInfo info(ParameterInfo::Kind::Integer, size, alignment, false, -1, isSigned);
 
+    // Parámetros flotantes
     if (isFloat) {
-        // Parámetros flotantes
-        if (size <= 8) {  // float, double
-            info.kind = ParameterInfo::Kind::Float;
-        } else if (size == 16) {  // __m128
-            info.kind = ParameterInfo::Kind::Vector;
-        }
-    } else {
-        // Parámetros enteros/punteros
-        if (size <= 8) {
-            info.kind = ParameterInfo::Kind::Integer;
-        } else if (size > 8 && size <= 16) {
-            info.kind = ParameterInfo::Kind::Aggregate;
-        } else {
-            // Tipos grandes pasan por referencia (indirect)
-            info.kind = ParameterInfo::Kind::Aggregate;
-        }
+        info.kind = ParameterInfo::Kind::Float;
+        return info;
     }
 
+    // Parámetros agregados (structs, etc.)
+    if (size > 8 || alignment > 8) {
+        info.kind = ParameterInfo::Kind::Aggregate;
+        return info;
+    }
+
+    // Parámetros vectoriales
+    if (size == 16 && alignment == 16) { // __m128
+        info.kind = ParameterInfo::Kind::Vector;
+        return info;
+    }
+
+    // Parámetros enteros normales
+    info.kind = ParameterInfo::Kind::Integer;
     return info;
 }
 
@@ -76,32 +69,27 @@ ABIContract::ReturnInfo ABIContract::classifyReturn(
 
     ReturnInfo info;
 
+    // Void
     if (size == 0) {
         info.kind = ReturnInfo::Kind::Void;
         return info;
     }
 
-    if (isAggregate) {
-        // Structs/unions/clases pasan por referencia
+    // Retorno por referencia para agregados grandes
+    if (isAggregate && (size > 8 || alignment > 8)) {
         info.kind = ReturnInfo::Kind::Aggregate;
         info.isIndirect = true;
-    } else if (isFloat) {
-        if (size <= 8) {
-            info.kind = ReturnInfo::Kind::Float;
-        } else if (size == 16) {
-            info.kind = ReturnInfo::Kind::Vector;
-        }
-    } else {
-        // Enteros y punteros
-        if (size <= 8) {
-            info.kind = ReturnInfo::Kind::Integer;
-        } else {
-            info.kind = ReturnInfo::Kind::Aggregate;
-            info.isIndirect = true;
-        }
+        return info;
     }
 
-    info.size = size;
+    // Retorno flotante
+    if (isFloat) {
+        info.kind = ReturnInfo::Kind::Float;
+        return info;
+    }
+
+    // Retorno entero
+    info.kind = ReturnInfo::Kind::Integer;
     return info;
 }
 
@@ -110,71 +98,60 @@ size_t ABIContract::calculateStackSize(
     size_t localSize,
     size_t spillSize) {
 
-    // Contar parámetros que van en stack
-    size_t stackArgsSize = 0;
+    size_t stackSize = SHADOW_SPACE_SIZE; // Espacio de sombra mínimo
+
+    // Calcular espacio para parámetros pasados en stack
+    size_t paramStackSize = 0;
+    int regCount = 0;
+
     for (const auto& param : params) {
-        if (!param.inRegister) {
-            // Alinear cada parámetro según su requerimiento
-            size_t alignedSize = (param.size + param.alignment - 1) & ~(param.alignment - 1);
-            stackArgsSize += alignedSize;
+        if (param.inRegister) {
+            regCount++;
+            if (regCount > MAX_INTEGER_ARGS_IN_REGS) {
+                // Este parámetro va al stack
+                paramStackSize += alignOffset(param.size, GENERAL_ALIGNMENT);
+            }
+        } else {
+            paramStackSize += alignOffset(param.size, param.alignment);
         }
     }
 
-    // Calcular tamaño total del frame
-    size_t totalSize = 0;
+    // Alinear el área de parámetros
+    paramStackSize = alignOffset(paramStackSize, STACK_ALIGNMENT);
 
-    // Espacio para dirección de retorno (8 bytes)
-    totalSize += 8;
+    // Calcular total
+    stackSize += paramStackSize;
+    stackSize += alignOffset(localSize, GENERAL_ALIGNMENT);
+    stackSize += alignOffset(spillSize, GENERAL_ALIGNMENT);
 
-    // Espacio para RBP guardado (8 bytes)
-    totalSize += 8;
-
-    // Área de spills de registros
-    totalSize += spillSize;
-
-    // Área de variables locales
-    totalSize += localSize;
-
-    // Área de parámetros en stack
-    totalSize += stackArgsSize;
-
-    // Espacio de sombra (32 bytes)
-    totalSize += SHADOW_SPACE_SIZE;
-
-    // Alinear a 16 bytes
-    totalSize = (totalSize + STACK_ALIGNMENT - 1) & ~(STACK_ALIGNMENT - 1);
-
-    return totalSize;
+    // Alinear el total
+    return alignOffset(stackSize, STACK_ALIGNMENT);
 }
 
 std::string ABIContract::getIntegerArgRegister(int index) {
-    switch (static_cast<ArgRegister>(index)) {
-        case ArgRegister::RCX: return "rcx";
-        case ArgRegister::RDX: return "rdx";
-        case ArgRegister::R8:  return "r8";
-        case ArgRegister::R9:  return "r9";
-        default: return "";  // Stack
+    static const char* registers[] = {"rcx", "rdx", "r8", "r9"};
+    if (index >= 0 && index < 4) {
+        return registers[index];
     }
+    return "";
 }
 
 std::string ABIContract::getFloatArgRegister(int index) {
-    switch (static_cast<FloatArgRegister>(index)) {
-        case FloatArgRegister::XMM0: return "xmm0";
-        case FloatArgRegister::XMM1: return "xmm1";
-        case FloatArgRegister::XMM2: return "xmm2";
-        case FloatArgRegister::XMM3: return "xmm3";
-        default: return "";  // Stack
+    static const char* registers[] = {"xmm0", "xmm1", "xmm2", "xmm3"};
+    if (index >= 0 && index < 4) {
+        return registers[index];
     }
+    return "";
 }
 
 std::string ABIContract::getValidationErrorString(ValidationError error) {
     switch (error) {
         case ValidationError::OK:
-            return "OK";
+            return "Sin errores";
         case ValidationError::INVALID_FRAME_SIZE:
             return "Tamaño de frame inválido";
         case ValidationError::UNALIGNED_STACK:
-            return "Stack no alineado correctamente";
+            return "Stack no alineado";
         case ValidationError::INVALID_PARAMETER_CLASS:
             return "Clase de parámetro inválida";
         case ValidationError::TOO_MANY_REG_ARGS:
@@ -182,8 +159,17 @@ std::string ABIContract::getValidationErrorString(ValidationError error) {
         case ValidationError::INVALID_RETURN_CLASS:
             return "Clase de retorno inválida";
         default:
-            return "Error de validación desconocido";
+            return "Error desconocido";
     }
+}
+
+// ============================================================================
+// FUNCIONES AUXILIARES
+// ============================================================================
+
+size_t ABIContract::alignOffset(size_t offset, size_t alignment) {
+    if (alignment == 0) return offset;
+    return (offset + alignment - 1) & ~(alignment - 1);
 }
 
 } // namespace cpp20::compiler::backend::abi

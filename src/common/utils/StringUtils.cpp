@@ -16,14 +16,14 @@ namespace cpp20::compiler::common::utils {
 std::string toLower(const std::string& str) {
     std::string result = str;
     std::transform(result.begin(), result.end(), result.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
+                   [](char c) { return static_cast<char>(std::tolower(static_cast<unsigned char>(c))); });
     return result;
 }
 
 std::string toUpper(const std::string& str) {
     std::string result = str;
     std::transform(result.begin(), result.end(), result.begin(),
-                   [](unsigned char c) { return std::toupper(c); });
+                   [](char c) { return static_cast<char>(std::toupper(static_cast<unsigned char>(c))); });
     return result;
 }
 

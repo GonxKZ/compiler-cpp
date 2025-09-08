@@ -24,7 +24,7 @@ target_compile_features(cpp20-compiler-coroutines PUBLIC cxx_std_20)
 
 # Set compile options
 target_compile_options(cpp20-compiler-coroutines PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W4 /await>
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /await:strict>
     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -fcoroutines>
     $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -fcoroutines-ts>
 )

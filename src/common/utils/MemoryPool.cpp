@@ -37,7 +37,7 @@ void* MemoryPool::allocate(size_t size) {
     return ptr;
 }
 
-void MemoryPool::deallocate(void* ptr, size_t size) {
+void MemoryPool::deallocate(void* ptr, size_t /*size*/) {
     // For simplicity, just use free for now
     // TODO: Implement proper pooling for Capa 4+
     std::free(ptr);

@@ -89,7 +89,7 @@ if(CPP20_COMPILER_ENABLE_COROUTINES)
 
     # Configurar para corroutinas si el compilador lo soporta
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        target_compile_options(coro-pingpong PRIVATE /await)
+        target_compile_options(coro-pingpong PRIVATE /await:strict)
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         target_compile_options(coro-pingpong PRIVATE -fcoroutines-ts)
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

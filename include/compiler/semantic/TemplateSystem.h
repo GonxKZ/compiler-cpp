@@ -8,6 +8,8 @@
 #include <compiler/ast/ASTNode.h>
 #include <compiler/ast/TemplateAST.h>
 #include <compiler/common/diagnostics/DiagnosticEngine.h>
+#include <compiler/symbols/Symbol.h>
+#include <compiler/types/Type.h>
 #include <memory>
 #include <unordered_map>
 #include <vector>

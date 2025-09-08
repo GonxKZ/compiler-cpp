@@ -1,6 +1,29 @@
 /**
  * @file Lexer.cpp
- * @brief Implementación del Lexer para C++20
+ * @brief Implementación completa del Analizador Léxico (Lexer) C++20
+ *
+ * Este archivo implementa el lexer que realiza el análisis léxico del código fuente
+ * C++20 siguiendo las fases de traducción especificadas en el estándar.
+ *
+ * Funcionalidades principales:
+ * - Tokenización completa de C++20 (palabras clave, identificadores, literales, operadores)
+ * - Implementación de las 8 fases de traducción del estándar C++20
+ * - Manejo de trigraphs, concatenación de líneas y eliminación de comentarios
+ * - Soporte para caracteres de escape y secuencias especiales
+ * - Estadísticas detalladas de procesamiento léxico
+ * - Sistema de recuperación de errores con ubicación precisa
+ *
+ * Las fases de traducción implementadas son:
+ * 1. Codificación física del archivo fuente
+ * 2. Eliminación de caracteres de control
+ * 3. Concatenación de líneas lógicas
+ * 4. Reemplazo de trigraphs
+ * 5. Eliminación de espacios y comentarios
+ * 6. Tokenización y evaluación de preprocesador
+ *
+ * @author Equipo de desarrollo del compilador C++20
+ * @version 1.0
+ * @date 2024
  */
 
 #include <compiler/frontend/lexer/Lexer.h>
@@ -211,7 +234,11 @@ bool Lexer::isAtEnd() const {
 }
 
 diagnostics::SourceLocation Lexer::currentLocation() const {
-    return diagnostics::SourceLocation(state_.line, state_.column, state_.position);
+    return diagnostics::SourceLocation(
+        static_cast<uint32_t>(state_.line),
+        static_cast<uint32_t>(state_.column),
+        static_cast<uint32_t>(state_.position)
+    );
 }
 
 void Lexer::advancePosition(char c) {

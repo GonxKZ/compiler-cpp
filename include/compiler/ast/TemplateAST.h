@@ -1,4 +1,4 @@
-git /**
+/**
  * @file TemplateAST.h
  * @brief Nodos AST para templates y concepts C++20
  */

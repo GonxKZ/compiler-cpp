@@ -1,6 +1,29 @@
 /**
  * @file Preprocessor.cpp
- * @brief Implementación del Preprocesador C++20
+ * @brief Implementación completa del Preprocesador C++20
+ *
+ * Este archivo implementa el preprocesador que maneja todas las directivas
+ * de preprocesamiento especificadas en el estándar C++20.
+ *
+ * Funcionalidades implementadas:
+ * - Directivas condicionales (#ifdef, #ifndef, #if, #elif, #else, #endif)
+ * - Definición y expansión de macros (#define, expansión automática)
+ * - Inclusión de archivos (#include con búsqueda en paths)
+ * - Directivas de control (#pragma, #line, #error, #warning)
+ * - Macros predefinidas del sistema (__FILE__, __LINE__, etc.)
+ * - Expansión de macros con control de recursión
+ * - Sistema de cache para macros definidas
+ * - Estadísticas detalladas de procesamiento
+ *
+ * El preprocesador mantiene un estado completo incluyendo:
+ * - Tabla de macros definidas con sus expansiones
+ * - Pilas de directivas condicionales
+ * - Lista de archivos incluidos
+ * - Estadísticas de rendimiento y uso
+ *
+ * @author Equipo de desarrollo del compilador C++20
+ * @version 1.0
+ * @date 2024
  */
 
 #include <compiler/frontend/Preprocessor.h>

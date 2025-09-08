@@ -1,6 +1,34 @@
 /**
  * @file Type.cpp
- * @brief Implementación básica del sistema de tipos
+ * @brief Implementación completa del sistema de tipos C++20
+ *
+ * Este archivo implementa la jerarquía de tipos que representa todos los tipos
+ * fundamentales y compuestos del lenguaje C++20.
+ *
+ * Jerarquía de tipos implementada:
+ * - Type (clase base abstracta)
+ *   - BasicType (tipos fundamentales: void, bool, char, int, float, etc.)
+ *   - PointerType (tipos puntero: T*)
+ *   - ReferenceType (tipos referencia: T& y T&&)
+ *   - ArrayType (tipos arreglo: T[N])
+ *   - FunctionType (tipos función: T(params))
+ *   - ClassType (tipos clase/struct)
+ *   - EnumType (tipos enumeración)
+ *
+ * Características del sistema de tipos:
+ * - CV-qualifiers completos (const, volatile, const volatile)
+ * - Compatibilidad y conversión entre tipos
+ * - Cálculo de tamaños y alineaciones
+ * - Verificación de completitud de tipos
+ * - Soporte para tipos compuestos complejos
+ * - Factory functions para creación de tipos comunes
+ *
+ * El sistema garantiza que todos los tipos sean representables
+ * correctamente en el ABI x64 de Windows.
+ *
+ * @author Equipo de desarrollo del compilador C++20
+ * @version 1.0
+ * @date 2024
  */
 
 #include <compiler/types/Type.h>

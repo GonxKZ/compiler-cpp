@@ -6,18 +6,48 @@
 
 Compilador completo C++20 desde cero, orientado específicamente a Windows x64. Implementa un **front-end personalizado** con **back-end basado en LLVM** para optimizar la generación de código y asegurar compatibilidad con el ecosistema PE/COFF.
 
-## Arquitectura
+## 🏗️ **Estructura del Proyecto**
 
 ```
-Front-end Personalizado          Back-end LLVM
-├── Preprocesador completo       ├── Generación IR SSA
-├── Lexer con UCNs/UCN           ├── ABI x64 Microsoft
-├── Parser recursivo descendente ├── Name mangling MSVC
-├── Sistema de tipos completo     ├── VTables y RTTI
-├── Motor de plantillas           ├── EH Windows/LLVM
-├── Constexpr evaluator          └── LLD integration
-└── Módulos C++20
+compiler-cpp/
+├── 📁 docs/                    # 📚 Documentación completa
+│   ├── IMPLEMENTATION_PLAN.md      # Plan de implementación
+│   ├── COMPILATION_ERROR_STRATEGY.md # Estrategia de errores
+│   ├── TESTING_REPORT.md           # Reportes de testing
+│   └── README.md                   # Índice de documentación
+├── 📁 src/                     # 🔧 Código fuente por componentes
+│   ├── ast/                        # Árbol de sintaxis abstracta
+│   ├── backend/                    # Back-end (ABI, COFF, LLVM)
+│   ├── frontend/                   # Front-end (Lexer, Parser)
+│   ├── common/                     # Utilidades compartidas
+│   └── [otros componentes...]
+├── 📁 include/compiler/        # 📋 Headers públicos
+├── 📁 tests/                   # 🧪 Tests unitarios e integración
+├── 📁 examples/                # 💡 Ejemplos de uso
+├── 📁 scripts/                 # 🛠️ Scripts de build automatizados
+└── 📁 cmake/                   # ⚙️ Configuración CMake
 ```
+
+## Arquitectura Técnica
+
+```
+Front-end Personalizado          Back-end Híbrido
+├── Preprocesador completo       ├── ABI x64 Microsoft
+├── Lexer con UCNs/UCN           ├── COFF/PE nativo
+├── Parser recursivo descendente ├── Name mangling MSVC
+├── Sistema de tipos completo     ├── Unwind/Exception handling
+├── Motor de plantillas           ├── LLVM IR generation
+├── Constexpr evaluator          └── LLD integration
+└── Módulos C++20 + Corrutinas
+```
+
+## 📚 **Documentación**
+
+Para documentación completa, visita:
+- **[📖 Documentación Principal](docs/README.md)** - Índice completo de documentación
+- **[📋 Plan de Implementación](docs/IMPLEMENTATION_PLAN.md)** - Arquitectura y roadmap detallado
+- **[🔧 Estrategia de Errores](docs/COMPILATION_ERROR_STRATEGY.md)** - Manejo de warnings y errores
+- **[🧪 Reportes de Testing](docs/TESTING_REPORT.md)** - Cobertura y resultados de tests
 
 ## Características Principales
 
@@ -223,12 +253,11 @@ compiler-cpp/
 ├── include/               # Headers públicos
 ├── tests/                 # Sistema de pruebas
 ├── examples/              # Ejemplos de uso
-├── docs/                  # Documentación
-├── cmake/                 # Módulos CMake
-├── third_party/           # Dependencias externas
+├── 📁 docs/               # 📚 Documentación completa
+├── 📁 scripts/            # 🛠️ Scripts de build automatizados
+├── 📁 cmake/              # ⚙️ Configuración CMake
 ├── CMakeLists.txt         # Configuración principal
-├── build.bat/.sh          # Scripts de construcción
-└── implementation-plan.mdc # Plan detallado
+└── LICENSE                # Licencia MIT
 ```
 
 ## Contribución
@@ -237,7 +266,7 @@ compiler-cpp/
 
 1. **Fork** el proyecto
 2. **Crea** una rama feature: `git checkout -b feature/nueva-funcionalidad`
-3. **Implementa** siguiendo el `implementation-plan.mdc`
+3. **Implementa** siguiendo el `docs/IMPLEMENTATION_PLAN.md`
 4. **Prueba** exhaustivamente
 5. **Commit**: `git commit -m 'feat: descripción clara'`
 6. **Push**: `git push origin feature/nueva-funcionalidad`

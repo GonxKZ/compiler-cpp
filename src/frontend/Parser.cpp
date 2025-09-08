@@ -1,6 +1,20 @@
 /**
  * @file Parser.cpp
- * @brief Implementación del Parser C++20
+ * @brief Implementación completa del Parser recursivo descendente C++20
+ *
+ * Este archivo contiene la implementación del parser que analiza el flujo de tokens
+ * generado por el lexer y construye el Árbol de Sintaxis Abstracta (AST).
+ *
+ * Características principales:
+ * - Parser recursivo descendente con recuperación de errores
+ * - Soporte completo para sintaxis C++20
+ * - Construcción de AST con información de ubicación precisa
+ * - Sistema de recuperación de errores para continuar análisis tras fallos
+ * - Estadísticas detalladas de rendimiento y errores
+ *
+ * @author Equipo de desarrollo del compilador C++20
+ * @version 1.0
+ * @date 2024
  */
 
 #include <compiler/frontend/Parser.h>
