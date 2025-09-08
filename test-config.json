@@ -1,0 +1,90 @@
+{
+  "test_suites": {
+    "unit_tests": {
+      "description": "Unit tests for individual components",
+      "targets": [
+        "cpp20-compiler-common",
+        "cpp20-compiler-types",
+        "cpp20-compiler-symbols",
+        "cpp20-compiler-ast",
+        "cpp20-compiler-frontend",
+        "cpp20-compiler-backend",
+        "cpp20-compiler-modules",
+        "cpp20-compiler-coroutines"
+      ],
+      "expected_outputs": [
+        "test_diagnostics.exe",
+        "test_lexer.exe",
+        "test_parser.exe",
+        "test_semantic.exe",
+        "test_codegen.exe"
+      ]
+    },
+    "integration_tests": {
+      "description": "Integration tests for end-to-end functionality",
+      "test_files": [
+        "test_integration_main.cpp",
+        "test_integration_modules.cpp",
+        "test_integration_coroutines.cpp"
+      ],
+      "expected_behaviors": [
+        "File compilation succeeds",
+        "Module imports work",
+        "Coroutine compilation works"
+      ]
+    },
+    "examples_tests": {
+      "description": "Test that all examples compile and run",
+      "examples": [
+        {
+          "name": "hello-world",
+          "target": "hello-world",
+          "expected_output": "Hello World!"
+        },
+        {
+          "name": "hello-coff",
+          "target": "hello-coff",
+          "expected_output": "COFF object generated"
+        }
+      ]
+    }
+  },
+  "validation_rules": {
+    "required_files": [
+      "bin/Release/cpp20-compiler.exe",
+      "bin/Debug/cpp20-compiler.exe"
+    ],
+    "required_libraries": [
+      "src/common/Release/cpp20-compiler-common.lib",
+      "src/types/Release/cpp20-compiler-types.lib",
+      "src/symbols/Release/cpp20-compiler-symbols.lib",
+      "src/ast/Release/cpp20-compiler-ast.lib",
+      "src/frontend/Release/cpp20-compiler-frontend.lib",
+      "src/backend/Release/cpp20-compiler-backend.lib"
+    ],
+    "compiler_flags": [
+      "/W4",
+      "/WX",
+      "/permissive-",
+      "/std:c++20"
+    ]
+  },
+  "error_detection": {
+    "critical_errors": [
+      "C2220",  // Warning treated as error
+      "C1001",  // Internal compiler error
+      "LNK1181", // Cannot open input file
+      "LNK2001", // Unresolved external symbol
+      "LNK1120"  // Unresolved externals
+    ],
+    "warning_thresholds": {
+      "max_warnings_per_file": 5,
+      "max_total_warnings": 50
+    }
+  },
+  "performance_checks": {
+    "max_build_time_seconds": 300,
+    "max_test_time_seconds": 60,
+    "min_code_coverage_percent": 70
+  }
+}

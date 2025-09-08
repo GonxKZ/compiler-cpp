@@ -5,12 +5,64 @@
 
 #pragma once
 
-#include <compiler/backend/coff/COFFTypes.h>
+#include "compiler/backend/coff/COFFTypes.h"
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
 #include <filesystem>
+#include <cstdint>
+#include <string>
+
+// ========================================================================
+// Definiciones directas de tipos COFF para evitar problemas de namespace
+// ========================================================================
+
+namespace cpp20::compiler::backend {
+
+// Forward declarations and type definitions
+namespace coff {
+
+// COFF Symbol structure
+struct COFFSymbol {
+    std::string name;
+    uint32_t value = 0;
+    int16_t sectionNumber = 0;
+    uint16_t type = 0;
+    uint8_t storageClass = 0;
+    uint8_t auxSymbols = 0;
+
+    COFFSymbol(std::string n, uint8_t storage = 2) // IMAGE_SYM_CLASS_EXTERNAL = 2
+        : name(std::move(n)), storageClass(storage) {}
+};
+
+// COFF File Header structure
+struct IMAGE_FILE_HEADER {
+    uint16_t Machine;
+    uint16_t NumberOfSections;
+    uint32_t TimeDateStamp;
+    uint32_t PointerToSymbolTable;
+    uint32_t NumberOfSymbols;
+    uint16_t SizeOfOptionalHeader;
+    uint16_t Characteristics;
+};
+
+// COFF Section Header structure
+struct IMAGE_SECTION_HEADER {
+    char Name[8];
+    uint32_t VirtualSize;
+    uint32_t VirtualAddress;
+    uint32_t SizeOfRawData;
+    uint32_t PointerToRawData;
+    uint32_t PointerToRelocations;
+    uint32_t PointerToLinenumbers;
+    uint16_t NumberOfRelocations;
+    uint16_t NumberOfLinenumbers;
+    uint32_t Characteristics;
+};
+
+} // namespace coff
+} // namespace cpp20::compiler::backend
 
 namespace cpp20::compiler::backend::link {
 
@@ -21,12 +73,17 @@ namespace cpp20::compiler::backend::link {
 /**
  * @brief Alias para el header COFF estándar
  */
-using COFFHeader = coff::IMAGE_FILE_HEADER;
+using COFFHeader = cpp20::compiler::backend::coff::IMAGE_FILE_HEADER;
 
 /**
  * @brief Alias para el header de sección COFF estándar
  */
-using SectionHeader = coff::IMAGE_SECTION_HEADER;
+using SectionHeader = cpp20::compiler::backend::coff::IMAGE_SECTION_HEADER;
+
+/**
+ * @brief Alias para el símbolo COFF estándar
+ */
+using COFFSymbol = cpp20::compiler::backend::coff::COFFSymbol;
 
 /**
  * @brief Información de relocalización extendida
