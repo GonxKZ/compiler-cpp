@@ -8,6 +8,9 @@ add_executable(hello-world hello.cpp)
 # Ejemplo de generación de objeto COFF
 add_executable(hello-coff hello_coff.cpp)
 
+# Ejemplo de prueba del sistema de unwind (Capa 2)
+add_executable(test-unwind test_unwind.cpp)
+
 # Enlazar con las librerías necesarias
 target_link_libraries(hello-coff
     PRIVATE
@@ -15,4 +18,10 @@ target_link_libraries(hello-coff
         cpp20-compiler::common
 )
 
-# TODO: Configurar ejemplos más avanzados según las capas
+target_link_libraries(test-unwind
+    PRIVATE
+        cpp20-compiler::backend
+        cpp20-compiler::common
+)
+
+# Configurar ejemplos según las capas implementadas

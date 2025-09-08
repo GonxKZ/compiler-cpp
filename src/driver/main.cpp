@@ -3,7 +3,7 @@
  * @brief Punto de entrada principal del compilador C++20
  */
 
-#include "CompilerDriver.h"
+#include <compiler/driver/CompilerDriver.h>
 #include <iostream>
 #include <cstdlib>
 

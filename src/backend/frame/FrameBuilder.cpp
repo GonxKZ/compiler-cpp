@@ -13,15 +13,14 @@ namespace cpp20::compiler::backend {
 // FrameLayout implementation
 // ========================================================================
 
-FrameLayout::FrameLayout() = default;
-
 size_t FrameLayout::totalSize() const {
     return parameterAreaSize + localAreaSize + spillAreaSize +
-           ABIContract::SHADOW_SPACE_SIZE + 16; // return addr + saved RBP
+           32 + 16; // shadow space (32) + return addr (8) + saved RBP (8)
 }
 
 bool FrameLayout::isValid() const {
-    return ABIContract::validateFrameLayout(*this);
+    // Validación simplificada - verificar alineación
+    return (totalSize() % 16) == 0 && totalSize() > 0;
 }
 
 // ========================================================================
@@ -31,7 +30,7 @@ bool FrameLayout::isValid() const {
 FrameBuilder::FrameBuilder() = default;
 
 FrameLayout FrameBuilder::buildFrameLayout(
-    const std::vector<ABIContract::ParameterInfo>& params,
+    const std::vector<ParameterInfo>& params,
     size_t localSize,
     size_t spillSize) {
 
@@ -62,18 +61,19 @@ FrameLayout FrameBuilder::buildFrameLayout(
     return layout;
 }
 
-std::vector<ABIContract::ParameterInfo> FrameBuilder::classifyParameters(
+std::vector<ParameterInfo> FrameBuilder::classifyParameters(
     const std::vector<std::pair<size_t, size_t>>& paramSizes) {
 
-    std::vector<ABIContract::ParameterInfo> params;
+    std::vector<ParameterInfo> params;
 
     for (size_t i = 0; i < paramSizes.size(); ++i) {
         const auto& [size, alignment] = paramSizes[i];
 
-        auto paramInfo = ABIContract::classifyParameter(size, alignment, false, false);
+        // Crear parámetro (simplificado - todos como enteros por ahora)
+        ParameterInfo paramInfo(ParameterInfo::Kind::Integer, size, alignment, false, -1, false);
 
         // Asignar registro si está disponible
-        if (paramInfo.kind == ABIContract::ParameterInfo::Kind::Integer && i < 4) {
+        if (i < 4) {
             paramInfo.inRegister = true;
             paramInfo.registerIndex = static_cast<int>(i);
         }

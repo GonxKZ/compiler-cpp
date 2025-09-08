@@ -11,17 +11,13 @@ namespace cpp20::compiler::ast {
 // ASTNode implementation
 // ========================================================================
 
-ASTNode::ASTNode(ASTNodeKind kind, diagnostics::SourceLocation location)
-    : kind_(kind), location_(location) {}
-
-ASTNode::~ASTNode() = default;
+// Constructor y destructor ya están definidos inline en el header
 
 // ========================================================================
 // TranslationUnit implementation
 // ========================================================================
 
-TranslationUnit::TranslationUnit(diagnostics::SourceLocation location)
-    : ASTNode(ASTNodeKind::TranslationUnit, location) {}
+// Constructor ya está definido inline en el header
 
 void TranslationUnit::accept(ASTVisitor* visitor) {
     if (visitor) {

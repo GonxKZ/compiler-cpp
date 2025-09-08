@@ -5,6 +5,11 @@
 #include <vector>
 #include <string>
 
+// Forward declaration para tipos
+namespace cpp20::compiler::types {
+    class Type;
+}
+
 namespace cpp20::compiler::ast {
 
 /**
@@ -71,13 +76,13 @@ public:
     virtual std::string toString() const = 0;
 
     // Información de tipos (se establece durante análisis semántico)
-    const class types::Type* type() const { return type_; }
-    void setType(const class types::Type* type) { type_ = type; }
+    const class cpp20::compiler::types::Type* type() const { return type_; }
+    void setType(const class cpp20::compiler::types::Type* type) { type_ = type; }
 
 private:
     ASTNodeKind kind_;
     diagnostics::SourceLocation location_;
-    const class types::Type* type_ = nullptr;
+    const class cpp20::compiler::types::Type* type_ = nullptr;
 };
 
 /**

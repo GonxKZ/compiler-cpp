@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
 
 namespace cpp20::compiler::backend::coff {
 
@@ -20,7 +21,7 @@ COFFDumper::COFFDumper() = default;
 
 bool COFFDumper::dumpFile(const std::string& filename, std::ostream& output) {
     try {
-        std::string content = utils::readFile(filename);
+        std::string content = cpp20::compiler::common::utils::readFile(filename);
         if (content.empty()) {
             output << "Error: Empty or invalid file" << std::endl;
             return false;
@@ -227,7 +228,7 @@ std::string COFFDumper::getSectionName(const IMAGE_SECTION_HEADER& header) {
 
 size_t COFFDumper::getFileSize(const std::string& filename) {
     try {
-        std::string content = utils::readFile(filename);
+        std::string content = cpp20::compiler::common::utils::readFile(filename);
         return content.size();
     } catch (...) {
         return 0;

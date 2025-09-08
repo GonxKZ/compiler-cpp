@@ -34,17 +34,32 @@ set(COFF_HEADERS
     coff/COFFDumper.h
 )
 
+# Unwind Support
+set(UNWIND_SOURCES
+    unwind/UnwindCodeGenerator.cpp
+    unwind/UnwindEmitter.cpp
+    unwind/ExceptionMapper.cpp
+)
+
+set(UNWIND_HEADERS
+    unwind/UnwindTypes.h
+    unwind/UnwindEmitter.h
+    unwind/ExceptionMapper.h
+)
+
 # Combinar todos los sources y headers
 set(BACKEND_SOURCES
     ${ABI_SOURCES}
     ${FRAME_SOURCES}
     ${COFF_SOURCES}
+    ${UNWIND_SOURCES}
 )
 
 set(BACKEND_HEADERS
     ${ABI_HEADERS}
     ${FRAME_HEADERS}
     ${COFF_HEADERS}
+    ${UNWIND_HEADERS}
 )
 
 # Crear librería del back-end

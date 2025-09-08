@@ -30,7 +30,7 @@ bool COFFWriter::writeObject(const COFFObject& object, const std::string& filena
         updateHeaderOffsets(buffer, object);
 
         // Write to file
-        utils::writeFile(filename, std::string(buffer.begin(), buffer.end()));
+        cpp20::compiler::common::utils::writeFile(filename, std::string(buffer.begin(), buffer.end()));
         return true;
 
     } catch (const std::exception& e) {
