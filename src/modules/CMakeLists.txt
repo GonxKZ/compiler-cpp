@@ -1,12 +1,30 @@
-# =============================================================================
-# Sistema de Módulos C++20
-# =============================================================================
+# CMakeLists.txt for C++20 Modules System
 
-# TODO: Implementar sistema de módulos en Capa 7
-# Por ahora, este módulo está vacío
+# Create modules library
+add_library(cpp20-compiler-modules STATIC
+    ModuleSystem.cpp
+)
 
-# Crear librería modules (vacía por ahora)
-add_library(cpp20-compiler-modules INTERFACE)
+# Set include directories
+target_include_directories(cpp20-compiler-modules
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src
+)
 
-# Alias
-add_library(cpp20-compiler::modules ALIAS cpp20-compiler-modules)
+# Link dependencies
+target_link_libraries(cpp20-compiler-modules
+    PUBLIC
+        cpp20-compiler-common
+)
+
+# Set C++ standard
+target_compile_features(cpp20-compiler-modules PUBLIC cxx_std_20)
+
+# Set compile options
+target_compile_options(cpp20-compiler-modules PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra>
+    $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra>
+)

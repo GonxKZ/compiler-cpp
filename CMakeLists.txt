@@ -139,6 +139,7 @@ add_subdirectory(src/templates)
 add_subdirectory(src/constexpr)
 
 # Módulos C++20
+option(CPP20_COMPILER_ENABLE_MODULES "Enable C++20 modules support" ON)
 if(CPP20_COMPILER_ENABLE_MODULES)
     add_subdirectory(src/modules)
 endif()

@@ -52,4 +52,27 @@ target_link_libraries(test-constexpr
         cpp20-compiler::common
 )
 
+# Ejemplo del sistema de módulos C++20 (Capa 7)
+if(CPP20_COMPILER_ENABLE_MODULES)
+    # Nota: Los módulos requieren soporte especial del compilador
+    # Este ejemplo demuestra la estructura pero puede requerir
+    # configuración adicional para compilación real
+
+    add_executable(modules-demo modules_main.cpp)
+
+    target_link_libraries(modules-demo
+        PRIVATE
+            cpp20-compiler::modules
+            cpp20-compiler::backend
+            cpp20-compiler::common
+    )
+
+    # Configurar para módulos si el compilador lo soporta
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_compile_options(modules-demo PRIVATE /experimental:module)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        target_compile_options(modules-demo PRIVATE -fmodules)
+    endif()
+endif()
+
 # Configurar ejemplos según las capas implementadas
