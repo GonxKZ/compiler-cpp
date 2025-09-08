@@ -2,263 +2,328 @@
 
 ## Visión General del Proyecto
 
-Este proyecto implementa un compilador C++20 completo desde cero, orientado específicamente a la plataforma Windows x64. La arquitectura combina un front-end personalizado con back-end basado en LLVM para optimizar la generación de código y asegurar compatibilidad con el ecosistema PE/COFF.
+Este proyecto implementa un compilador C++20 **verdaderamente desde cero** para Windows x64, con énfasis en la corrección binaria y la interoperabilidad con el ecosistema Microsoft. La estrategia se basa en construir primero un **back-end propio** de código máquina y formato COFF/PE antes de integrar LLVM, asegurando que cada capa tenga criterios de salida medibles y verificables.
 
-**Especificación de Referencia**: Borrador final C++20 (N4861) y su versión navegable en línea
-**Objetivo Binario**: ABI x64 de Microsoft y formato PE/COFF
-**Enlazador**: LLD integrado
-**Arquitectura**: Front-end propio + Back-end LLVM
+**Especificación de Referencia**: Borrador final C++20 (N4861) y documentación ABI x64 de Microsoft
+**Objetivo Binario**: ABI x64 de Microsoft completo y formato PE/COFF nativo
+**Arquitectura**: Front-end personalizado + Back-end híbrido (propio → LLVM)
+**Enfoque**: Desarrollo por capas con dependencias deductivas estrictas
 
-## Alcance Inicial del Estándar
+## Arquitectura por Capas (Enfoque "From Scratch" Real)
 
-**Núcleo Base**: C++17 completo con extensiones selectivas de C++20
-- ✅ constexpr extendido (constinit, consteval)
-- ✅ lambdas genéricas y captura mejorada
-- ✅ auto/decltype mejorados
-- ✅ using declarations y aliases
-- ✅ excepciones y manejo de errores
-- ✅ RTTI (Run-Time Type Information)
-
-**Extensiones Progresivas** (ordenadas por prioridad):
-- 🔄 Conceptos y restricciones (requires, concept)
-- 🔄 Módulos C++20 (module, import, export)
-- 🔄 Corroutinas (co_await, co_yield, co_return)
-
-## Arquitectura de Tres Etapas (Bootstrap)
-
-### Etapa A: Bootstrap Inicial
-**Estado**: ✅ Completado - Framework base establecido
-**Objetivo**: Compilador en C++17 usando compilador existente
-**Alcance**: Subconjunto C/"C con clases" + IR LLVM bien formado
-
-**TODOs Completados**:
-- ✅ Configurar estructura de proyecto modular
-- ✅ Establecer sistema de construcción CMake
-- ✅ Crear framework base del compilador
-- ✅ Implementar front-end mínimo (lexer básico)
-- ✅ Emitir IR LLVM para funciones básicas
-- ✅ Control de flujo básico (if/while)
-- ✅ Estructuras y tipos básicos
-- ✅ Llamadas de funciones simples
-
-### Etapa B: Expansión del Front-end
-**Estado**: 🔄 En Progreso
-**Objetivo**: Cobertura sustancial de C++20 + semántica completa
-**Alcance**: Plantillas, constexpr, módulos, ABI Microsoft completo
-
-#### TODOs Pendientes - Front-end Core:
-
-**1. Preprocesador Completo**
-- ✅ Implementar las ocho fases de traducción de [lex.phases]
-- 🔄 Expander de macros con prevención de reexpansión
-- 🔄 Control de __VA_ARGS__ y mapeo de ubicaciones
-- 🔄 Soporte para header units
-- 🔄 Coexistencia con módulos C++20
-
-**2. Parser Avanzado**
-- ✅ Descenso recursivo + tabla de precedencias Pratt
-- 🔄 Tentative parsing con retroceso acotado
-- 🔄 Oráculo semántico para ambigüedades
-- 🔄 Predicados semánticos de ayuda al parser
-- 🔄 Gramáticas parciales para declaraciones/declaradores
-- 🔄 Gramáticas para requires-cláusulas y expressions
-- 🔄 Telemetría de ambigüedades
-
-**3. Sistema de Tipos y Símbolos**
-- ✅ AST fuertemente tipado
-- ✅ Sistema de símbolos por ámbitos
-- 🔄 Motor de tipos completo (cualificaciones, referencias, punteros)
-- 🔄 Categorías de valor y conversión implícita
-- 🔄 Deducción de auto y dependent types
-- 🔄 Representación precisa de expresiones dependientes
-- 🔄 Diferenciación de entidades (linkage, visibilidad, almacenamiento)
-
-**4. Motor de Lookup**
-- ✅ Búsqueda no calificada y calificada
-- 🔄 ADL (Argument Dependent Lookup)
-- 🔄 Two-phase name lookup en plantillas
-- 🔄 Análisis semántico en dos fases
-
-#### TODOs Pendientes - Templates y Concepts:
-
-**5. Sistema de Plantillas**
-- 🔄 Deducción de argumentos con SFINAE
-- 🔄 Resolución de sobrecarga con conversiones implícitas
-- 🔄 Ordenación parcial de plantillas y especializaciones
-- 🔄 Constraint solver sobre AST de constraints
-- 🔄 Sustitución perezosa en constraints
-- 🔄 Serialización de instantiation contexts
-- 🔄 Manejo de fallos en requires (no como errores)
-
-**6. Constexpr y Evaluación en Tiempo de Compilación**
-- 🔄 Intérprete parcial del lenguaje
-- 🔄 VM para funciones constexpr
-- 🔄 Memoria abstracta y reglas de constant evaluation
-- 🔄 Cacheo de resultados por árbol y firma
-- 🔄 Diagnósticos con traza de evaluación
-- 🔄 Plegado de expresiones estáticas
-
-**7. Módulos C++20**
-- 🔄 Generación y consumo de BMI (Binary Module Interface)
-- 🔄 Soporte para formato PCM (Clang) e IFC (Microsoft)
-- 🔄 Dependency scanner para módulos
-- 🔄 Grafo acíclico de dependencias
-- 🔄 Cache de BMIs con invalidación
-- 🔄 Header units e import <header>
-
-**8. Corroutinas C++20**
-- 🔄 Transformación de funciones con co_*
-- 🔄 Semántica de promesa y awaitables
-- 🔄 Generación de intrínsecos llvm.coro.*
-- 🔄 Comprobaciones estáticas de tipos de promesa
-- 🔄 Validación de operadores await_*
-- 🔄 Prevención de escapes indebidos
-
-#### TODOs Pendientes - Back-end y ABI:
-
-**9. Generación de LLVM IR**
-- 🔄 SSA desde AST tipado
-- 🔄 ABI x64 Microsoft (registro de argumentos, shadow space)
-- 🔄 Preservación de registros no volátiles
-- 🔄 Name mangling compatible con MSVC
-- 🔄 Disposición de vtables y RTTI
-- 🔄 Metadatos de excepciones para Windows EH
-
-**10. Manejo de Excepciones y RTTI**
-- 🔄 Modelo EH de Windows en LLVM
-- 🔄 Personality functions e invoke/landing pads
-- 🔄 Estructuras de tipo_info
-- 🔄 Interoperabilidad con MSVC
-- 🔄 Pruebas cruzadas de excepciones
-
-**11. Driver del Compilador**
-- 🔄 CLI compatible con expectativas modernas
-- 🔄 Modos -S, -c, --emit-bmi
-- 🔄 Detección de entorno Windows SDK/CRT
-- 🔄 Response files y compatibilidad cl/clang-cl
-- 🔄 Target x86_64-pc-windows-msvc por defecto
-
-### Etapa C: Auto-compilación
-**Estado**: ⏳ Pendiente
-**Objetivo**: Migrar código del compilador al subconjunto soportado
-**Alcance**: Auto-compilación completa y cierre del bootstrap
-
-#### TODOs Pendientes - Auto-compilación:
-
-**12. Migración del Código Base**
-- ⏳ Portar código fuente a subconjunto C++20 soportado
-- ⏳ Resolver dependencias circulares en bootstrap
-- ⏳ Validar auto-compilación exitosa
-- ⏳ Optimizaciones del compilador self-hosted
-
-## Infraestructura de Desarrollo
-
-### Sistema de Construcción
-- ✅ CMake 3.20+ con presets modernos
-- ✅ Estructura modular de directorios
-- ✅ Configuración para múltiples targets
-- 🔄 Integración con LLVM (versión específica TBD)
-- 🔄 Configuración de LLD como enlazador
-
-### Versiones de Dependencias
-**LLVM**: Versión 15.0+ (compatibilidad Windows estable)
-**LLD**: Versión correspondiente a LLVM
-**Windows SDK**: 10.0.19041.0+
-**CRT**: Microsoft Visual C++ 2022
-
-### Artefactos de Salida Soportados
-- ✅ .obj COFF (objetos compilados)
-- 🔄 .lib estático (bibliotecas)
-- 🔄 .pdb opcional (debugging symbols)
-- 🔄 .exe/.dll (ejecutables y bibliotecas dinámicas)
-
-## Sistema de Pruebas
-
-### Estrategia de Testing
-1. **Unidad**: Tests micro para cada fase
-2. **Integración**: Generación de .obj y linking
-3. **Conformidad**: Suites inspiradas en tests públicos
-4. **Rendimiento**: Benchmarks con/sin optimizaciones
-
-#### TODOs Pendientes - Testing:
-
-**13. Framework de Pruebas**
-- 🔄 Tests unitarios para lexer/preprocesador
-- 🔄 Tests de integración para parser/semántica
-- 🔄 Tests de conformidad C++20
-- 🔄 Fixture para compilación y ejecución
-- 🔄 Matrices de pruebas para lookup/ADL
-- 🔄 Medición de rendimiento con BMIs
-
-**14. Hitos de Validación**
-- 🔄 Hello World C sin CRT personalizado
-- 🔄 Binario C++ con clases/herencia/RTTI
-- 🔄 Ejecutable con templates complejos
-- 🔄 Ejemplo constexpr avanzado
-- 🔄 Módulo math con BMI
-- 🔄 Corroutina funcional completa
-
-## Interoperabilidad y Compatibilidad
-
-### Ecosistema Windows
-- 🔄 Convención de llamadas MS x64
-- 🔄 Name mangling MSVC
-- 🔄 PE/COFF structure compliance
-- 🔄 Utilidades de verificación (dumpbin, llvm-readobj)
-
-#### TODOs Pendientes - Interop:
-
-**15. Verificación Binaria**
-- 🔄 Verificador de nombres decorados
-- 🔄 Validación estructura PE/COFF
-- 🔄 Pruebas de excepciones cruzadas
-- 🔄 Virtual dispatch entre módulos
-
-## Métricas de Éxito
-
-### Criterios de Completitud por Etapa
-
-**Etapa A (Bootstrap Inicial)**:
-- [x] Compilación exitosa de código C básico
-- [x] Generación de IR LLVM válido
-- [ ] Linking con LLD exitoso
-- [ ] Ejecución correcta del binario resultante
-
-**Etapa B (Expansión)**:
-- [ ] Cobertura >80% de features C++17
-- [ ] Soporte completo para templates básicos
-- [ ] Constexpr funcional
-- [ ] Linking con CRT de Microsoft
-- [ ] Interoperabilidad básica con MSVC
-
-**Etapa C (Auto-compilación)**:
-- [ ] Auto-compilación exitosa
-- [ ] Paridad funcional con versión host
-- [ ] Optimizaciones self-hosted
-- [ ] Cierre completo del bootstrap
-
-## Riesgos y Mitigaciones
-
-### Riesgos Técnicos
-1. **Complejidad del Parser**: Mitigación - implementación incremental con tests exhaustivos
-2. **ABI Compliance**: Mitigación - verificación constante contra documentación Microsoft
-3. **Performance**: Mitigación - profiling continuo y optimizaciones dirigidas
-4. **Interoperabilidad**: Mitigación - tests cruzados con MSVC regularmente
-
-### Riesgos de Proyecto
-1. **Alcance**: Mitigación - desarrollo por fases con criterios de salida claros
-2. **Dependencias**: Mitigación - versiones pinned de LLVM/LLD
-3. **Testing**: Mitigación - coverage mínimo 80% en código crítico
-
-## Timeline Estimado
-
-- **Etapa A**: 4-6 semanas (Framework base)
-- **Etapa B**: 12-16 semanas (Features principales)
-- **Etapa C**: 4-6 semanas (Auto-compilación)
-- **Testing y Polish**: 4-6 semanas
-- **Total**: 24-34 semanas de desarrollo full-time
+### 📋 **Principio Fundamental**
+Cada capa establece invariantes binarias que la siguiente puede asumir como correctas. Sin ABI correcto no hay prólogo/epílogo válido, sin prólogo no hay desenrollado, sin desenrollado no hay EH, y así sucesivamente.
 
 ---
 
+## 🏗️ **Capa 0: Núcleo de Ensamblado y Convenciones de Llamada**
+**Estado**: 🔄 Próxima - Base binaria esencial
+**Objetivo**: Establecer ABI x64 de Microsoft como contrato binario fundamental
+
+### **Alcance de la Capa 0**
+**Contrato Binario Base x86_64-pc-windows-msvc**:
+- Registros de paso de argumentos (RCX, RDX, R8, R9 para primeros 4)
+- Shadow space de 32 bytes para llamadas
+- Preservación de no volátiles (RBX, RBP, RDI, RSI, RSP, R12-R15)
+- Layout de tipos triviales y homogeneidad de agregados para retorno
+- Alineaciones específicas del ABI
+
+### **TODOs Capa 0**
+- 🔄 Implementar "frame builder" que decide spill slots y preservación
+- 🔄 Generador de thunks para variaciones de firma y trampolines
+- 🔄 Comprobador estático de invariantes de prólogo/epílogo
+- 🔄 Generador de pro-/epílogos conforme a convención x64
+- 🔄 Comprobador de usos de pila (shadow space, callee-saved)
+
+### **Criterios de Salida (Verificables)**
+- ✅ **abi_calling_convention.cxx**: Valida paso de enteros, FP, agregados y retornos en x64
+- ✅ **sum.exe**: Ejecutable funcional que calcula sumas con llamadas correctas
+- ✅ **fibonacci.exe**: Recursión iterativa y funcional con stack frames válidos
+- ✅ **memcpy.exe**: Copia de memoria manual con convenciones correctas
+- ✅ **llvm-readobj/dumpbin**: Confirman prólogos/epílogos conforme al ABI
+
+**Referencia**: [Microsoft x64 Calling Convention](https://docs.microsoft.com/en-us/cpp/build/x64-calling-convention)
+
+---
+
+## 🏗️ **Capa 1: Formato COFF y Relocations**
+**Estado**: ⏳ Pendiente - Formato objeto nativo
+**Objetivo**: Emisión nativa de .obj COFF con relocations AMD64
+
+### **Alcance de la Capa 1**
+**Estructuras COFF x64**:
+- Secciones .text, .rdata, .data, .pdata, .xdata
+- Nombres canónicos de secciones y tabla de símbolos
+- Relocations: IMAGE_REL_AMD64_ADDR32, ADDR64, REL32, REL32_1.._5
+- Tabla de importación mínima para kernel32.dll
+
+### **TODOs Capa 1**
+- 🔄 COFF writer con estructuras exactas y nombres canónicos
+- 🔄 Soporte para relocations AMD64 esenciales
+- 🔄 "Object dumper" propio para validar cabeceras
+- 🔄 Tabla de importación estática para CRT básico
+- 🔄 Verificación offline de estructuras COFF
+
+### **Criterios de Salida (Verificables)**
+- ✅ **hello.obj**: Objeto enlazable con link.exe
+- ✅ **dumpbin/llvm-readobj**: Reportan estructuras conformes
+- ✅ **link.exe**: Produce ejecutable válido sin errores
+- ✅ **hello.exe**: Ejecutable funcional con enlazado estático mínimo
+
+**Referencia**: [PE/COFF Specification](https://docs.microsoft.com/en-us/windows/win32/debug/pe-format)
+
+---
+
+## 🏗️ **Capa 2: Desenrollado y Excepciones Windows x64**
+**Estado**: ⏳ Pendiente - Stack unwinding esencial
+**Objetivo**: .pdata/.xdata válido para stack unwinding seguro
+
+### **Alcance de la Capa 2**
+**Modelo EH Windows x64**:
+- Rangos de funciones en .pdata con UNWIND_INFO
+- UNWIND_CODE exacto derivable de prólogos/epílogos
+- Mapeo try/catch/throw a secuencias invoke/landing pad
+- Interoperabilidad con __try/__except y CRT EH
+
+### **TODOs Capa 2**
+- 🔄 Gramática prólogo/epílogo → UNWIND_CODE automático
+- 🔄 Emisor de .xdata/.pdata con validación offline
+- 🔄 Mapeo try/catch/throw a IR interno con landing pads
+- 🔄 Pruebas cruzadas con __try/__except del CRT
+- 🔄 Verificación RaiseException/RtlVirtualUnwind
+
+### **Criterios de Salida (Verificables)**
+- ✅ **seh_unwind.cxx**: Lanzamientos/capturas cruzando funciones
+- ✅ **RaiseException**: Pasa sin corrupciones de stack
+- ✅ **RtlVirtualUnwind**: Desenrollado correcto verificado
+- ✅ **catch C++**: Interoperable con runtime MSVC
+
+**Referencia**: [Exception Handling x64](https://docs.microsoft.com/en-us/cpp/build/exception-handling-x64)
+
+---
+
+## 🏗️ **Capa 3: Mangling MSVC y Layout de Clases**
+**Estado**: ⏳ Pendiente - Interoperabilidad binaria
+**Objetivo**: Nombres decorados y vtables compatibles con MSVC
+
+### **Alcance de la Capa 3**
+**Mangling MSVC Completo**:
+- Funciones libres, miembros, estáticos, plantillas, overloads
+- Referencias/punteros a miembros, qualifiers, convenciones
+- Vtables/RTTI con layout compatible MSVC
+- Type_info structures y virtual dispatch
+
+### **TODOs Capa 3**
+- 🔄 Decorado completo compatible con undname.exe
+- 🔄 Generador de vtables y type_info para MSVC
+- 🔄 Verificador que compara con esquema Microsoft
+- 🔄 Pruebas de enlace con funciones MSVC
+- 🔄 Virtual dispatch interoperable
+
+### **Criterios de Salida (Verificables)**
+- ✅ **mangling_crosslink.cpp**: Objetos nuestros + MSVC linkan
+- ✅ **undname.exe**: Confirma decorados idénticos
+- ✅ **Virtual dispatch**: Funciona entre módulos mixtos
+- ✅ **RTTI**: Compatible con dynamic_cast del CRT
+
+**Referencia**: [MSVC Name Decoration](https://docs.microsoft.com/en-us/cpp/build/decorated-names)
+
+---
+
+## 🏗️ **Capa 4: Front-end Mínimo**
+**Estado**: ⏳ Pendiente - Análisis léxico/sintáctico
+**Objetivo**: Parser completo con preprocesador y semántica básica
+
+### **Alcance de la Capa 4**
+**Front-end C++20 Básico**:
+- Ocho fases de traducción con UCN y concatenación
+- Expander de macros con control de re-expansión
+- Parser recursivo descendente con tentative parsing
+- Sistema de símbolos y lookups por ámbito
+- Conversiones implícitas y categorías de valor
+
+### **TODOs Capa 4**
+- 🔄 Fases de traducción completas con UCNs
+- 🔄 Expander de macros con prevención de re-expansión
+- 🔄 Parser con oráculo semántico para ambigüedades
+- 🔄 Sistema de tipos con cualificaciones y referencias
+- 🔄 Two-phase lookup y ADL básico
+
+### **Criterios de Salida (Verificables)**
+- ✅ Programas C++ sin templates complejos compilan
+- ✅ Includes y macros no triviales funcionan
+- ✅ Código binario válido generado
+- ✅ Diagnósticos con ubicación precisa
+
+**Referencia**: [C++20 N4861](https://eel.is/c++draft/)
+
+---
+
+## 🏗️ **Capa 5: Plantillas y Conceptos**
+**Estado**: ⏳ Pendiente - Metaprogramming
+**Objetivo**: Constraint solver con SFINAE y resolución de sobrecarga
+
+### **Alcance de la Capa 5**
+**Sistema de Templates Completo**:
+- Deducción de argumentos con SFINAE
+- Resolución de sobrecarga con conversiones implícitas
+- Ordenación parcial y especializaciones
+- Constraint solver sobre AST de constraints
+
+### **TODOs Capa 5**
+- 🔄 Motor de sustitución con contexto de instanciación
+- 🔄 Constraint solver con normalización y subsunción
+- 🔄 Cacheo por AST y firma de instanciación
+- 🔄 Diagnósticos diferenciados SFINAE vs errores duros
+
+### **Criterios de Salida (Verificables)**
+- ✅ Librerías con std::enable_if equivalentes funcionan
+- ✅ Sobrecargas ambiguas resuelven correctamente
+- ✅ requires expressions diagnostican apropiadamente
+
+**Referencia**: [C++20 Templates](https://eel.is/c++draft/temp)
+
+---
+
+## 🏗️ **Capa 6: Constexpr y Evaluación**
+**Estado**: ⏳ Pendiente - Compile-time execution
+**Objetivo**: VM determinista con memoria abstracta
+
+### **Alcance de la Capa 6**
+**Evaluador Constexpr Completo**:
+- VM con layout trivial y aliasing definido
+- Reglas de constant evaluation estrictas
+- Cacheo inteligente de resultados
+- Traza de evaluación para debugging
+
+### **TODOs Capa 6**
+- 🔄 VM constexpr con operaciones permitidas
+- 🔄 Memoria abstracta y límites de recursión
+- 🔄 Integración con solver de plantillas
+- 🔄 Diagnósticos con traza completa
+
+### **Criterios de Salida (Verificables)**
+- ✅ Suites comparan valores con compilador de referencia
+- ✅ Uso no permitido rechazado correctamente
+- ✅ Evaluación determinista y reproducible
+
+**Referencia**: [C++20 Constant Evaluation](https://eel.is/c++draft/expr.const)
+
+---
+
+## 🏗️ **Capa 7: Módulos C++20**
+**Estado**: ⏳ Pendiente - Modularización
+**Objetivo**: BMI propietario con dependencias y cache
+
+### **Alcance de la Capa 7**
+**Sistema de Módulos**:
+- Formato BMI compacto con hash de opciones
+- Scanner de dependencias y grafo acíclico
+- Cache con invalidación por contenido/flags
+- Header units e import <header>
+
+### **TODOs Capa 7**
+- 🔄 Scanner de dependencias export/import
+- 🔄 Serializador/deserializador BMI
+- 🔄 Driver con compilación topológica
+- 🔄 Coherencia preprocesado/módulos
+
+### **Criterios de Salida (Verificables)**
+- ✅ **modules_math.{ixx,cpp,main.cpp}**: Compila incremental
+- ✅ Evita recompilaciones innecesarias
+- ✅ Consistencia entre TUs
+
+**Referencia**: [C++20 Modules](https://eel.is/c++draft/module)
+
+---
+
+## 🏗️ **Capa 8: Corroutinas C++20**
+**Estado**: ⏳ Pendiente - Asynchronous programming
+**Objetivo**: Máquina de estados propia con frame layout
+
+### **Alcance de la Capa 8**
+**Sistema de Corroutinas**:
+- Frame explícito con punteros de continuación
+- Destrucción segura y layout ABI-compliant
+- Interacción con EH para unwinding correcto
+- Microbenchmarks vs lowering estilo LLVM
+
+### **TODOs Capa 8**
+- 🔄 Verificación estática de promesa y awaitables
+- 🔄 Layout de frame con continuaciones
+- 🔄 Interacción con stack unwinding
+- 🔄 Generación de puntos de suspensión/reanudación
+
+### **Criterios de Salida (Verificables)**
+- ✅ **coro_pingpong.cpp**: Corroutines alternan correctamente
+- ✅ Suspenden/reanudan sin leaks de memoria
+- ✅ Limpieza apropiada al finalizar
+
+**Referencia**: [C++20 Coroutines](https://eel.is/c++draft/coroutine)
+
+---
+
+## 🔧 **Infraestructura Transversal**
+
+### **Enlazado Híbrido (Fases 1→2)**
+- **Fase 1**: link.exe como oráculo para validar .obj COFF
+- **Fase 2**: Mini-linker COFF→PE propio
+- **Criterio**: Ejecutables que pasan smoke tests
+
+### **Driver CLI Profesional**
+- CLI compatible: -c, -E, -S, --emit-bmi, -I, -L, -l
+- Detección automática de entorno Windows SDK/CRT
+- Sandbox por unidad de compilación
+
+### **Interoperabilidad CRT/SDK**
+- __declspec(dllimport/dllexport) y .drectve
+- Pruebas con printf, new/delete, std::exception
+- Compatibilidad binaria reproducible
+
+### **Diagnósticos y Performance**
+- Mapa de ubicaciones con correspondencia preprocesado→fuente
+- -ftime-report propio con mediciones detalladas
+- Caches deterministas para plantillas/constexpr
+
+## 📊 **Métricas de Éxito por Capa**
+
+### **Capa 0 (ABI)**: ✅ Ejecutables básicos funcionales
+### **Capa 1 (COFF)**: ✅ .obj enlazables con link.exe
+### **Capa 2 (EH)**: ✅ Stack unwinding interoperable
+### **Capa 3 (Mangling)**: ✅ Enlace transparente con MSVC
+### **Capa 4 (Front-end)**: ✅ C++ básico compila correctamente
+### **Capa 5 (Templates)**: ✅ Metaprogramming interoperable
+### **Capa 6 (Constexpr)**: ✅ Evaluación determinista
+### **Capa 7 (Modules)**: ✅ Compilación incremental
+### **Capa 8 (Coroutines)**: ✅ Async programming funcional
+
+## ⚡ **Timeline Realista**
+
+- **Capas 0-1**: 8-10 semanas (Base binaria)
+- **Capas 2-3**: 6-8 semanas (Interoperabilidad)
+- **Capa 4**: 4-6 semanas (Front-end)
+- **Capas 5-6**: 6-8 semanas (Templates/Constexpr)
+- **Capas 7-8**: 4-6 semanas (Modules/Corrutinas)
+- **Testing/Polish**: 4-6 semanas
+- **Total**: 32-44 semanas de desarrollo full-time
+
+## 🎯 **Ventajas de Este Enfoque**
+
+### **Verificabilidad**
+Cada capa tiene criterios de salida objetivos y medibles en Windows x64
+
+### **Interoperabilidad Garantizada**
+Compatibilidad binaria con MSVC desde la primera línea de código máquina
+
+### **Robustez**
+Sin dependencia de LLVM para features críticas; back-end híbrido (propio→LLVM)
+
+### **Escalabilidad**
+Dependencias deductivas claras permiten desarrollo incremental seguro
+
+---
+
+**Este plan garantiza un compilador C++20 verdaderamente desde cero, con corrección binaria verificable en cada paso.**
+
 *Última actualización: $(date)*
-*Estado del proyecto: Etapa A completada, Etapa B en progreso*
+*Enfoque: Desarrollo por capas con criterios de salida medibles*

@@ -127,9 +127,7 @@ add_subdirectory(src/ast)
 add_subdirectory(src/frontend)
 
 # Back-end
-if(CPP20_COMPILER_USE_LLVM)
-    add_subdirectory(src/backend)
-endif()
+add_subdirectory(src/backend)
 
 # IR Intermedio
 add_subdirectory(src/ir)
